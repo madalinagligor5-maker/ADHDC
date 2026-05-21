@@ -1,0 +1,38 @@
+{
+  "title": "Focus",
+  "modes": {
+    "pomodoro": "Pomodoro",
+    "deep": "Deep Focus"
+  },
+  "phase": {
+    "focus": "Focus time",
+    "break": "Break time"
+  },
+  "controls": {
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "reset": "Reset"
+  },
+  "upNext": "Up next: {{minutes}} min break",
+  "breakNow": "Time for a {{minutes}} min break 🌿",
+  "skipBreak": "Skip break",
+  "breakSuggestions": [
+    "Stand up and stretch gently.",
+    "Sip some water.",
+    "Look out a window for a moment.",
+    "Take three slow breaths.",
+    "Roll your shoulders and relax."
+  ],
+  "sounds": {
+    "label": "Ambient sound",
+    "none": "None",
+    "forest": "Forest",
+    "rain": "Rain",
+    "cafe": "Café"
+  },
+  "complete": {
+    "title": "Session complete! 🎉",
+    "message": "Your plant grew a little. Beautiful focus."
+  }
+}

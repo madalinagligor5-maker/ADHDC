@@ -1,0 +1,28 @@
+{
+  "title": "Reminders",
+  "enable": "Allow reminders",
+  "enableHint": "Gentle, friendly nudges — never stressful. You're always in control.",
+  "permissionDenied": "Notifications are off in your device settings. You can turn them on there whenever you like.",
+  "morning": {
+    "label": "Morning hello",
+    "hint": "A kind start to your day",
+    "title": "Good morning ☀️",
+    "body": "A gentle hello. What's one small thing for today?"
+  },
+  "evening": {
+    "label": "Evening check-in",
+    "hint": "Wind down and celebrate",
+    "title": "Evening 🌙",
+    "body": "However today went, you showed up. That counts."
+  },
+  "nudges": {
+    "label": "Gentle nudges",
+    "hint": "Soft reminders for your habits"
+  },
+  "habit": {
+    "title": "A little nudge 🌱",
+    "body": "Whenever you're ready: {{name}}"
+  },
+  "time": "Time",
+  "habitsNote": "Set a reminder time on each habit to get a gentle nudge."
+}

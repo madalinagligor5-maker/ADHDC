@@ -1,0 +1,35 @@
+{
+  "title": "Achievements",
+  "level": {
+    "label": "Level {{level}}",
+    "progress": "{{current}} / {{total}} XP to next level",
+    "caption": "Every little thing you do adds up ✨"
+  },
+  "streaks": {
+    "activity": "Activity",
+    "focus": "Focus",
+    "habit": "Best habit",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "none": "Start today 🌱"
+  },
+  "garden": {
+    "title": "Your garden",
+    "caption_one": "{{count}} plant grown",
+    "caption_other": "{{count}} plants grown",
+    "empty": "Finish a focus session to grow your first plant 🌱"
+  },
+  "badges": {
+    "title": "Badges",
+    "items": {
+      "firstTask": { "title": "First step", "desc": "Complete your first task" },
+      "firstFocus": { "title": "In the zone", "desc": "Finish a focus session" },
+      "streak3": { "title": "Three in a row", "desc": "3-day activity streak" },
+      "streak7": { "title": "Whole week", "desc": "7-day activity streak" },
+      "focus10": { "title": "Deep diver", "desc": "10 focus sessions" },
+      "habit7": { "title": "Chain keeper", "desc": "Keep a habit going 7 days" },
+      "mood7": { "title": "Tuned in", "desc": "7 mood check-ins" },
+      "tasks25": { "title": "Getting it done", "desc": "Complete 25 tasks" }
+    }
+  }
+}

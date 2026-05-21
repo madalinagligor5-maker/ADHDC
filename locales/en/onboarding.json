@@ -1,0 +1,56 @@
+{
+  "welcome": {
+    "benefits": {
+      "organize": { "title": "Organize tasks", "body": "Break it down. Get it done." },
+      "focus": { "title": "Stay focused", "body": "Timers, reminders and less chaos." },
+      "care": { "title": "Take care of you", "body": "Track mood, habits and celebrate small wins." }
+    },
+    "getStarted": "Let's get started",
+    "haveAccount": "I already have an account"
+  },
+  "about": {
+    "title": "Nice to meet you!",
+    "subtitle": "Let's set things up your way. This only takes a minute.",
+    "nameLabel": "What should we call you?",
+    "namePlaceholder": "Your name",
+    "languageLabel": "Language"
+  },
+  "goals": {
+    "title": "What would help you most?",
+    "subtitle": "Pick as many as you like — you can change these anytime.",
+    "options": {
+      "organize": "Organize my tasks",
+      "focus": "Focus better",
+      "routines": "Build gentle routines",
+      "mood": "Understand my mood",
+      "remember": "Remember important things",
+      "calm": "Feel less overwhelmed"
+    }
+  },
+  "focusHours": {
+    "title": "When do you focus best?",
+    "subtitle": "We'll suggest focus sessions around these times.",
+    "options": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night"
+    }
+  },
+  "reminders": {
+    "title": "How should we gently remind you?",
+    "subtitle": "No pressure — just soft nudges. Change these anytime.",
+    "morningSummary": "Morning hello",
+    "morningSummaryHint": "A kind start with your plan for the day",
+    "eveningSummary": "Evening check-in",
+    "eveningSummaryHint": "Wind down and celebrate what you did",
+    "gentleNudges": "Gentle nudges",
+    "gentleNudgesHint": "Light reminders for tasks and habits"
+  },
+  "nav": {
+    "next": "Continue",
+    "finish": "I'm ready ✨",
+    "skip": "Skip for now"
+  },
+  "progress": "Step {{current}} of {{total}}"
+}

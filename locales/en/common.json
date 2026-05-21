@@ -1,0 +1,30 @@
+{
+  "appName": "ADHDCal",
+  "tagline": "Plan. Focus. Thrive.",
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "next": "Next",
+    "back": "Back",
+    "done": "Done",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "retry": "Try again",
+    "gotIt": "Got it",
+    "continue": "Continue",
+    "close": "Close"
+  },
+  "tabs": {
+    "home": "Home",
+    "tasks": "Tasks",
+    "focus": "Focus",
+    "habits": "Habits",
+    "more": "More"
+  },
+  "languageNames": {
+    "en": "English",
+    "ro": "Română",
+    "fr": "Français"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "title": "Coach IA",
+  "intro": {
+    "name": "Ton coach",
+    "tagline": "Ton coach bienveillant pour le TDAH, là pour te soutenir.",
+    "greeting": "Salut ! Je suis là pour t'aider à planifier, te concentrer et te sentir un peu plus léger. À quoi penses-tu ?"
+  },
+  "streak": {
+    "days_one": "🔥 {{count}} jour",
+    "days_other": "🔥 {{count}} jours",
+    "caption": "Tu t'en sors super bien !",
+    "captionZero": "Chaque petit pas compte. C'est parti."
+  },
+  "quickActions": {
+    "overwhelmed": { "title": "Je me sens débordé", "subtitle": "Aide-moi à découper" },
+    "motivation": { "title": "J'ai besoin de motivation", "subtitle": "Donne-moi un coup de pouce" },
+    "planDay": { "title": "Planifie ma journée", "subtitle": "Aide-moi à prioriser" },
+    "brainDump": { "title": "Vide-cerveau", "subtitle": "Sors-moi ça de la tête" }
+  },
+  "messages": {
+    "breakdownPrompt": "Ça fait beaucoup, et c'est normal. Qu'est-ce qui te paraît énorme là, maintenant ? Dis-moi la tâche et on la réduit ensemble.",
+    "planEmpty": "Ta journée est grande ouverte. Tu veux ajouter une petite chose pour commencer ?",
+    "planIntro": "Voici un ordre tout doux à essayer — de haut en bas :",
+    "brainDump": "Bonne idée. Vidons ta tête sur le papier — rien n'est trop petit.",
+    "fallback": "Je suis là, avec toi. Dis-moi ce qui te préoccupe, ou choisis une des options ci-dessus."
+  },
+  "motivations": [
+    "Tu as déjà surmonté des choses difficiles. Voici juste la prochaine — un petit pas.",
+    "Tu n'as pas besoin de te sentir prêt. Il suffit de commencer, en douceur.",
+    "Le progrès n'est pas bruyant. Même les petits gestes comptent et s'accumulent.",
+    "Sois aussi gentil avec toi qu'avec un ami. Tu fais de ton mieux.",
+    "Cinq minutes, c'est un vrai début. Ton toi de demain te remerciera."
+  ],
+  "chatReplies": [
+    "Je t'entends. Quel petit morceau pourrait-on commencer ?",
+    "Merci de m'en parler. Tu veux découper ça ou démarrer un focus court ?",
+    "C'est compréhensible. Sois doux avec toi — on y va étape par étape.",
+    "Tu n'es pas seul là-dedans. Quel serait un prochain pas tout doux ?"
+  ],
+  "breakdown": {
+    "intro": "Réduisons « {{title}} » en étapes faisables :",
+    "addAction": "Ajouter avec les étapes"
+  },
+  "breakdownSteps": [
+    "Définis à quoi ressemble « terminé »",
+    "Fais juste la toute première partie",
+    "Prends une petite pause",
+    "Attaque le prochain petit morceau"
+  ],
+  "actions": {
+    "focus": "Démarrer une session de focus",
+    "tasks": "Ouvrir mes tâches",
+    "added": "Ajouté à tes tâches avec les étapes ✨"
+  },
+  "inputPlaceholder": "Écris un message…",
+  "send": "Envoyer",
+  "systemPrompt": "Tu es le coach chaleureux et encourageant d'ADHDCal, pour les personnes avec un TDAH. Sois bref, bienveillant et concret. Ne juge jamais et ne mets pas de pression. Propose de petites étapes et célèbre les petites victoires. Réponds dans la langue de l'utilisateur."
+}

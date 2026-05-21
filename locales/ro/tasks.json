@@ -1,0 +1,89 @@
+{
+  "title": "Sarcini",
+  "categories": {
+    "work": "Muncă",
+    "school": "Școală",
+    "personal": "Personal"
+  },
+  "priorities": {
+    "low": "Scăzută",
+    "medium": "Medie",
+    "high": "Ridicată"
+  },
+  "quickAdd": {
+    "title": "Adaugă o sarcină",
+    "titlePlaceholder": "Ce ai vrea să faci?",
+    "category": "Categorie",
+    "priority": "Prioritate",
+    "time": "Oră",
+    "anytime": "Oricând",
+    "save": "Adaugă sarcina"
+  },
+  "views": {
+    "today": "Azi",
+    "upcoming": "Urmează",
+    "projects": "Proiecte"
+  },
+  "brainDump": {
+    "title": "Notează rapid",
+    "hint": "Ți-a venit un gând? Lasă-l aici și organizează-l mai târziu.",
+    "placeholder": "Scrie orice și apasă Enter…"
+  },
+  "swipe": {
+    "complete": "Gata",
+    "snooze": "Mâine"
+  },
+  "empty": {
+    "today": {
+      "title": "Nimic pentru azi",
+      "message": "Bucură-te de răgaz sau adaugă un lucru mic."
+    },
+    "upcoming": {
+      "title": "Nimic în plan",
+      "message": "Tu cel de mâine îți mulțumește. Planifică atunci când ești gata."
+    },
+    "projects": {
+      "title": "Încă nicio sarcină",
+      "message": "Notează ceva rapid în câmpul de mai sus."
+    }
+  },
+  "inbox": "Necategorisite",
+  "subtasks": {
+    "title": "Pași",
+    "addPlaceholder": "Adaugă un pas mic…",
+    "empty": "Împarte în pași mici — așa e mult mai ușor să începi.",
+    "progress": "{{done}} din {{total}} gata"
+  },
+  "detail": {
+    "titlePlaceholder": "Titlul sarcinii",
+    "notes": "Notițe",
+    "notesPlaceholder": "Adaugă detalii…",
+    "category": "Categorie",
+    "priority": "Prioritate",
+    "dueDate": "Termen",
+    "duration": "Timp estimat",
+    "project": "Proiect",
+    "delete": "Șterge sarcina"
+  },
+  "due": {
+    "today": "Azi",
+    "tomorrow": "Mâine",
+    "weekend": "Acest weekend",
+    "nextWeek": "Săptămâna viitoare",
+    "none": "Fără dată"
+  },
+  "duration": {
+    "none": "Nesetat",
+    "m15": "15 min",
+    "m30": "30 min",
+    "m60": "1 h",
+    "m120": "2 h"
+  },
+  "projects": {
+    "newProject": "Proiect nou",
+    "namePlaceholder": "Numele proiectului",
+    "add": "Creează proiect",
+    "color": "Culoare",
+    "none": "Fără proiect"
+  }
+}

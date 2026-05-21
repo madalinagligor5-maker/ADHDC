@@ -1,0 +1,26 @@
+{
+  "title": "Habitudes",
+  "views": {
+    "week": "Semaine",
+    "month": "Mois"
+  },
+  "streak": {
+    "days_one": "{{count}} jour",
+    "days_other": "{{count}} jours"
+  },
+  "freshStart": "Chaque jour est un nouveau départ 🌱",
+  "empty": {
+    "title": "Crée une habitude douce",
+    "message": "De petites routines bienveillantes que tu peux vraiment tenir. Ajoutes-en une pour commencer — sans pression."
+  },
+  "add": {
+    "title": "Nouvelle habitude",
+    "namePlaceholder": "ex. Boire de l'eau",
+    "icon": "Icône",
+    "color": "Couleur",
+    "reminder": "Rappel",
+    "noReminder": "Aucun rappel",
+    "save": "Créer l'habitude"
+  },
+  "delete": "Supprimer l'habitude"
+}

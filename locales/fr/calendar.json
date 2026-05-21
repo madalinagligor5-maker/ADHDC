@@ -1,0 +1,22 @@
+{
+  "title": "Calendrier",
+  "views": {
+    "month": "Mois",
+    "week": "Semaine",
+    "day": "Jour"
+  },
+  "load": {
+    "free": "Journée libre",
+    "light": "Journée légère",
+    "balanced": "Journée équilibrée",
+    "full": "Journée chargée — sois doux avec toi"
+  },
+  "anytime": "À tout moment",
+  "noTasks": "Rien de prévu",
+  "today": "Aujourd'hui",
+  "sync": {
+    "title": "Connecter un calendrier",
+    "subtitle": "La synchro Google ou Apple arrive bientôt",
+    "notConnected": "Non connecté"
+  }
+}

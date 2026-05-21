@@ -1,0 +1,56 @@
+{
+  "welcome": {
+    "benefits": {
+      "organize": { "title": "Organizează-ți sarcinile", "body": "Împarte-le în pași. Și gata." },
+      "focus": { "title": "Rămâi concentrat", "body": "Cronometre, memento-uri și mai puțin haos." },
+      "care": { "title": "Ai grijă de tine", "body": "Urmărește-ți starea, obiceiurile și bucură-te de reușitele mici." }
+    },
+    "getStarted": "Să începem",
+    "haveAccount": "Am deja un cont"
+  },
+  "about": {
+    "title": "Mă bucur să te cunosc!",
+    "subtitle": "Hai să pregătim totul pe gustul tău. Durează doar un minut.",
+    "nameLabel": "Cum vrei să-ți spunem?",
+    "namePlaceholder": "Numele tău",
+    "languageLabel": "Limbă"
+  },
+  "goals": {
+    "title": "Ce te-ar ajuta cel mai mult?",
+    "subtitle": "Alege câte vrei — le poți schimba oricând.",
+    "options": {
+      "organize": "Să-mi organizez sarcinile",
+      "focus": "Să mă concentrez mai bine",
+      "routines": "Să-mi creez rutine blânde",
+      "mood": "Să-mi înțeleg starea",
+      "remember": "Să țin minte lucrurile importante",
+      "calm": "Să mă simt mai puțin copleșit"
+    }
+  },
+  "focusHours": {
+    "title": "Când te concentrezi cel mai bine?",
+    "subtitle": "Îți vom sugera sesiuni de focus în aceste momente.",
+    "options": {
+      "morning": "Dimineața",
+      "afternoon": "După-amiaza",
+      "evening": "Seara",
+      "night": "Noaptea"
+    }
+  },
+  "reminders": {
+    "title": "Cum să-ți amintim cu blândețe?",
+    "subtitle": "Fără presiune — doar mici impulsuri. Le poți schimba oricând.",
+    "morningSummary": "Salut de dimineață",
+    "morningSummaryHint": "Un început cald, cu planul zilei tale",
+    "eveningSummary": "Bilanț de seară",
+    "eveningSummaryHint": "Relaxează-te și bucură-te de ce ai făcut",
+    "gentleNudges": "Impulsuri blânde",
+    "gentleNudgesHint": "Memento-uri ușoare pentru sarcini și obiceiuri"
+  },
+  "nav": {
+    "next": "Continuă",
+    "finish": "Sunt gata ✨",
+    "skip": "Sări peste deocamdată"
+  },
+  "progress": "Pasul {{current}} din {{total}}"
+}

@@ -1,0 +1,22 @@
+{
+  "title": "Calendar",
+  "views": {
+    "month": "Lună",
+    "week": "Săptămână",
+    "day": "Zi"
+  },
+  "load": {
+    "free": "Zi liberă",
+    "light": "Zi lejeră",
+    "balanced": "Zi echilibrată",
+    "full": "Zi plină — ai grijă de tine"
+  },
+  "anytime": "Oricând",
+  "noTasks": "Nimic planificat",
+  "today": "Azi",
+  "sync": {
+    "title": "Conectează un calendar",
+    "subtitle": "Sincronizarea cu Google sau Apple vine în curând",
+    "notConnected": "Neconectat"
+  }
+}

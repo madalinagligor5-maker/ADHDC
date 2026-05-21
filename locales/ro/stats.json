@@ -1,0 +1,37 @@
+{
+  "title": "Realizări",
+  "level": {
+    "label": "Nivelul {{level}}",
+    "progress": "{{current}} / {{total}} XP până la nivelul următor",
+    "caption": "Fiecare lucru mic pe care îl faci contează ✨"
+  },
+  "streaks": {
+    "activity": "Activitate",
+    "focus": "Focus",
+    "habit": "Cel mai bun obicei",
+    "days_one": "{{count}} zi",
+    "days_few": "{{count}} zile",
+    "days_other": "{{count}} de zile",
+    "none": "Începe azi 🌱"
+  },
+  "garden": {
+    "title": "Grădina ta",
+    "caption_one": "{{count}} plantă crescută",
+    "caption_few": "{{count}} plante crescute",
+    "caption_other": "{{count}} de plante crescute",
+    "empty": "Termină o sesiune de focus ca să crești prima plantă 🌱"
+  },
+  "badges": {
+    "title": "Insigne",
+    "items": {
+      "firstTask": { "title": "Primul pas", "desc": "Termină prima sarcină" },
+      "firstFocus": { "title": "Concentrat", "desc": "Încheie o sesiune de focus" },
+      "streak3": { "title": "Trei la rând", "desc": "Serie de 3 zile de activitate" },
+      "streak7": { "title": "O săptămână întreagă", "desc": "Serie de 7 zile de activitate" },
+      "focus10": { "title": "Scufundător", "desc": "10 sesiuni de focus" },
+      "habit7": { "title": "Păstrătorul lanțului", "desc": "Ține un obicei 7 zile" },
+      "mood7": { "title": "Atent la tine", "desc": "7 notări de dispoziție" },
+      "tasks25": { "title": "Treabă făcută", "desc": "Termină 25 de sarcini" }
+    }
+  }
+}

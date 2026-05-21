@@ -1,0 +1,22 @@
+{
+  "title": "Setări",
+  "language": {
+    "title": "Limbă",
+    "subtitle": "Alege limba pentru ADHDCal",
+    "system": "Ca pe dispozitivul meu",
+    "current": "Limba curentă"
+  },
+  "appearance": {
+    "title": "Aspect",
+    "themeMode": "Temă",
+    "system": "Sistem",
+    "light": "Luminos",
+    "dark": "Întunecat",
+    "reduceMotion": "Redu animațiile",
+    "reduceMotionHint": "Ecrane mai calme, cu mai puține animații"
+  },
+  "profile": {
+    "title": "Numele tău",
+    "namePlaceholder": "Cum vrei să-ți spunem?"
+  }
+}

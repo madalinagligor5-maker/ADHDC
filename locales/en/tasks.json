@@ -1,0 +1,89 @@
+{
+  "title": "Tasks",
+  "categories": {
+    "work": "Work",
+    "school": "School",
+    "personal": "Personal"
+  },
+  "priorities": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "quickAdd": {
+    "title": "Add a task",
+    "titlePlaceholder": "What would you like to do?",
+    "category": "Category",
+    "priority": "Priority",
+    "time": "Time",
+    "anytime": "Anytime",
+    "save": "Add task"
+  },
+  "views": {
+    "today": "Today",
+    "upcoming": "Upcoming",
+    "projects": "Projects"
+  },
+  "brainDump": {
+    "title": "Brain dump",
+    "hint": "Got a thought? Drop it here and sort it later.",
+    "placeholder": "Type anything and press return…"
+  },
+  "swipe": {
+    "complete": "Done",
+    "snooze": "Tomorrow"
+  },
+  "empty": {
+    "today": {
+      "title": "Nothing for today",
+      "message": "Enjoy the breathing room, or add one small thing."
+    },
+    "upcoming": {
+      "title": "Nothing coming up",
+      "message": "Your future self thanks you. Plan ahead whenever you're ready."
+    },
+    "projects": {
+      "title": "No tasks yet",
+      "message": "Capture something with a brain dump above."
+    }
+  },
+  "inbox": "Inbox",
+  "subtasks": {
+    "title": "Steps",
+    "addPlaceholder": "Add a small step…",
+    "empty": "Break this into tiny steps — it makes starting so much easier.",
+    "progress": "{{done}} of {{total}} done"
+  },
+  "detail": {
+    "titlePlaceholder": "Task title",
+    "notes": "Notes",
+    "notesPlaceholder": "Add any details…",
+    "category": "Category",
+    "priority": "Priority",
+    "dueDate": "Due date",
+    "duration": "Estimated time",
+    "project": "Project",
+    "delete": "Delete task"
+  },
+  "due": {
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "weekend": "This weekend",
+    "nextWeek": "Next week",
+    "none": "No date"
+  },
+  "duration": {
+    "none": "Not set",
+    "m15": "15 min",
+    "m30": "30 min",
+    "m60": "1 h",
+    "m120": "2 h"
+  },
+  "projects": {
+    "newProject": "New project",
+    "namePlaceholder": "Project name",
+    "add": "Create project",
+    "color": "Color",
+    "none": "No project"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "title": "Mood",
+  "checkIn": {
+    "question": "How are you feeling?",
+    "notePlaceholder": "Anything you'd like to note? (optional)",
+    "save": "Save check-in",
+    "savedTitle": "Thanks for checking in 💜",
+    "savedMessage": "Noticing how you feel is a kind thing to do."
+  },
+  "levels": {
+    "1": "Tough",
+    "2": "Low",
+    "3": "Okay",
+    "4": "Good",
+    "5": "Great"
+  },
+  "trend": {
+    "title": "Your mood lately",
+    "empty": "Check in a few times and your gentle trend will appear here."
+  },
+  "history": {
+    "title": "History",
+    "empty": "No check-ins yet — there's no wrong way to feel."
+  }
+}

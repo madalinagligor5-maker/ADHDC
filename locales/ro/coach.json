@@ -1,0 +1,59 @@
+{
+  "title": "Antrenor AI",
+  "intro": {
+    "name": "Antrenorul tău",
+    "tagline": "Antrenorul tău prietenos cu ADHD, aici ca să te sprijine.",
+    "greeting": "Bună! Sunt aici să te ajut să-ți planifici ziua, să te concentrezi și să te simți mai ușor. La ce te gândești?"
+  },
+  "streak": {
+    "days_one": "🔥 {{count}} zi",
+    "days_few": "🔥 {{count}} zile",
+    "days_other": "🔥 {{count}} de zile",
+    "caption": "Te descurci minunat!",
+    "captionZero": "Fiecare pas contează. Hai să începem."
+  },
+  "quickActions": {
+    "overwhelmed": { "title": "Mă simt copleșit", "subtitle": "Ajută-mă să împart în pași" },
+    "motivation": { "title": "Am nevoie de motivație", "subtitle": "Dă-mi un impuls" },
+    "planDay": { "title": "Planifică-mi ziua", "subtitle": "Ajută-mă să prioritizez" },
+    "brainDump": { "title": "Notează rapid", "subtitle": "Scoate-mi gândurile din cap" }
+  },
+  "messages": {
+    "breakdownPrompt": "Pare mult și e în regulă. Ce ți se pare mare acum? Spune-mi sarcina și o micșorăm împreună.",
+    "planEmpty": "Ziua ta e complet deschisă. Vrei să adaugi un lucru mic ca să începi?",
+    "planIntro": "Iată o ordine blândă de încercat — de sus în jos:",
+    "brainDump": "Ce idee bună. Hai să-ți golim mintea pe hârtie — nimic nu e prea mic.",
+    "fallback": "Sunt aici, cu tine. Spune-mi ce te frământă sau alege una dintre opțiunile de mai sus."
+  },
+  "motivations": [
+    "Ai mai trecut prin lucruri grele. Ăsta e doar următorul — un pas mic.",
+    "Nu trebuie să te simți pregătit. Trebuie doar să începi, cu blândețe.",
+    "Progresul nu e zgomotos. Și mișcările mici contează și se adună.",
+    "Fii la fel de blând cu tine cum ai fi cu un prieten. Faci tot ce poți.",
+    "Cinci minute sunt un început real. Tu cel de mâine îți va mulțumi."
+  ],
+  "chatReplies": [
+    "Te aud. Care ar fi o părticică mică de la care am putea începe?",
+    "Mulțumesc că mi-ai spus. Vrei să împărțim în pași sau să începem un focus scurt?",
+    "Are sens. Fii blând cu tine — mergem pas cu pas.",
+    "Nu ești singur în asta. Care ar fi un următor pas blând?"
+  ],
+  "breakdown": {
+    "intro": "Hai să micșorăm „{{title}}” în pași realizabili:",
+    "addAction": "Adaugă cu pași"
+  },
+  "breakdownSteps": [
+    "Stabilește cum arată „gata”",
+    "Fă doar prima părticică",
+    "Ia o scurtă pauză",
+    "Ocupă-te de următoarea bucățică"
+  ],
+  "actions": {
+    "focus": "Începe o sesiune de focus",
+    "tasks": "Deschide sarcinile",
+    "added": "Adăugat la sarcini, cu pași ✨"
+  },
+  "inputPlaceholder": "Scrie un mesaj…",
+  "send": "Trimite",
+  "systemPrompt": "Ești antrenorul cald și încurajator al ADHDCal, pentru persoane cu ADHD. Fii scurt, blând și concret. Nu critica și nu pune presiune niciodată. Sugerează pași mici și sărbătorește reușitele mărunte. Răspunde în limba utilizatorului."
+}

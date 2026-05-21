@@ -1,0 +1,38 @@
+{
+  "title": "Focus",
+  "modes": {
+    "pomodoro": "Pomodoro",
+    "deep": "Concentration profonde"
+  },
+  "phase": {
+    "focus": "Temps de concentration",
+    "break": "Temps de pause"
+  },
+  "controls": {
+    "start": "Démarrer",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "reset": "Réinitialiser"
+  },
+  "upNext": "Ensuite : pause de {{minutes}} min",
+  "breakNow": "C'est l'heure d'une pause de {{minutes}} min 🌿",
+  "skipBreak": "Passer la pause",
+  "breakSuggestions": [
+    "Lève-toi et étire-toi doucement.",
+    "Bois un peu d'eau.",
+    "Regarde par la fenêtre un instant.",
+    "Prends trois respirations lentes.",
+    "Fais rouler tes épaules et détends-toi."
+  ],
+  "sounds": {
+    "label": "Son d'ambiance",
+    "none": "Aucun",
+    "forest": "Forêt",
+    "rain": "Pluie",
+    "cafe": "Café"
+  },
+  "complete": {
+    "title": "Session terminée ! 🎉",
+    "message": "Ta plante a un peu poussé. Belle concentration."
+  }
+}

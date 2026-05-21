@@ -1,0 +1,22 @@
+{
+  "title": "Réglages",
+  "language": {
+    "title": "Langue",
+    "subtitle": "Choisis la langue d'ADHDCal",
+    "system": "Comme mon appareil",
+    "current": "Langue actuelle"
+  },
+  "appearance": {
+    "title": "Apparence",
+    "themeMode": "Thème",
+    "system": "Système",
+    "light": "Clair",
+    "dark": "Sombre",
+    "reduceMotion": "Réduire les animations",
+    "reduceMotionHint": "Des écrans plus calmes, avec moins d'animations"
+  },
+  "profile": {
+    "title": "Ton prénom",
+    "namePlaceholder": "Comment veux-tu qu'on t'appelle ?"
+  }
+}

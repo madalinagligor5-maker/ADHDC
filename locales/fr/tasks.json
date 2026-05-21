@@ -1,0 +1,89 @@
+{
+  "title": "Tâches",
+  "categories": {
+    "work": "Travail",
+    "school": "École",
+    "personal": "Personnel"
+  },
+  "priorities": {
+    "low": "Basse",
+    "medium": "Moyenne",
+    "high": "Haute"
+  },
+  "quickAdd": {
+    "title": "Ajouter une tâche",
+    "titlePlaceholder": "Que souhaites-tu faire ?",
+    "category": "Catégorie",
+    "priority": "Priorité",
+    "time": "Heure",
+    "anytime": "À tout moment",
+    "save": "Ajouter la tâche"
+  },
+  "views": {
+    "today": "Aujourd'hui",
+    "upcoming": "À venir",
+    "projects": "Projets"
+  },
+  "brainDump": {
+    "title": "Vide-cerveau",
+    "hint": "Une idée en tête ? Dépose-la ici et trie plus tard.",
+    "placeholder": "Écris ce que tu veux et appuie sur Entrée…"
+  },
+  "swipe": {
+    "complete": "Fait",
+    "snooze": "Demain"
+  },
+  "empty": {
+    "today": {
+      "title": "Rien pour aujourd'hui",
+      "message": "Profite de ce moment de répit, ou ajoute une petite chose."
+    },
+    "upcoming": {
+      "title": "Rien à venir",
+      "message": "Ton toi de demain te remercie. Planifie quand tu es prêt."
+    },
+    "projects": {
+      "title": "Aucune tâche pour l'instant",
+      "message": "Capture quelque chose avec le vide-cerveau ci-dessus."
+    }
+  },
+  "inbox": "Boîte de réception",
+  "subtasks": {
+    "title": "Étapes",
+    "addPlaceholder": "Ajoute une petite étape…",
+    "empty": "Découpe en petites étapes — c'est tellement plus facile de commencer.",
+    "progress": "{{done}} sur {{total}} faites"
+  },
+  "detail": {
+    "titlePlaceholder": "Titre de la tâche",
+    "notes": "Notes",
+    "notesPlaceholder": "Ajoute des détails…",
+    "category": "Catégorie",
+    "priority": "Priorité",
+    "dueDate": "Échéance",
+    "duration": "Temps estimé",
+    "project": "Projet",
+    "delete": "Supprimer la tâche"
+  },
+  "due": {
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "weekend": "Ce week-end",
+    "nextWeek": "La semaine prochaine",
+    "none": "Sans date"
+  },
+  "duration": {
+    "none": "Non défini",
+    "m15": "15 min",
+    "m30": "30 min",
+    "m60": "1 h",
+    "m120": "2 h"
+  },
+  "projects": {
+    "newProject": "Nouveau projet",
+    "namePlaceholder": "Nom du projet",
+    "add": "Créer le projet",
+    "color": "Couleur",
+    "none": "Aucun projet"
+  }
+}

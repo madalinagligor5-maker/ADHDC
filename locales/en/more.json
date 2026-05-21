@@ -1,0 +1,15 @@
+{
+  "title": "More",
+  "sections": {
+    "wellbeing": "Wellbeing",
+    "planning": "Planning",
+    "you": "You"
+  },
+  "items": {
+    "mood": { "title": "Mood", "subtitle": "Check in with how you feel" },
+    "calendar": { "title": "Calendar", "subtitle": "See your week at a glance" },
+    "coach": { "title": "AI Coach", "subtitle": "Your ADHD-friendly companion" },
+    "stats": { "title": "Achievements", "subtitle": "Streaks, badges and your garden" },
+    "settings": { "title": "Settings", "subtitle": "Language, theme and reminders" }
+  }
+}

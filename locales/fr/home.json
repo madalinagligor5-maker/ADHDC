@@ -1,0 +1,43 @@
+{
+  "greeting": {
+    "morning": "Bonjour, {{name}} ! 👋",
+    "afternoon": "Bon après-midi, {{name}} ! 👋",
+    "evening": "Bonsoir, {{name}} ! 👋",
+    "morningNoName": "Bonjour ! 👋",
+    "afternoonNoName": "Bon après-midi ! 👋",
+    "eveningNoName": "Bonsoir ! 👋"
+  },
+  "welcomeCard": {
+    "title": "Bienvenue dans ADHDCal ✨",
+    "body": "Ton espace apaisant pour planifier, te concentrer et célébrer tes petites victoires. On le construit ensemble, une étape douce à la fois."
+  },
+  "notifications": "Notifications",
+  "intentionTitle": "Intention du jour",
+  "intentions": [
+    "Tu n'as pas à tout faire — juste la prochaine petite chose.",
+    "Le progrès, pas la perfection. Tu t'en sors très bien.",
+    "Une étape à la fois, c'est déjà avancer.",
+    "Sois doux avec toi aujourd'hui. Tu es assez.",
+    "Les petites victoires comptent. Trouvons-en une ensemble.",
+    "Le plus dur, c'est de se lancer — et tu es déjà là."
+  ],
+  "todaysPlan": {
+    "title": "Le plan du jour",
+    "addTask": "Ajouter une tâche",
+    "empty": {
+      "title": "Une journée toute neuve",
+      "message": "Rien de prévu pour l'instant. Ajoute une petite chose — c'est un super début."
+    }
+  },
+  "quickFocus": {
+    "title": "Focus",
+    "subtitle": "Fais pousser ta plante avec une session apaisante",
+    "cta": "Démarrer le focus"
+  },
+  "quickMood": {
+    "title": "Comment te sens-tu ?",
+    "subtitle": "Un petit point, rien que pour toi",
+    "thanks": "Merci d'avoir fait le point 💜"
+  },
+  "viewCalendar": "Voir le calendrier"
+}
