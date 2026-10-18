@@ -56,11 +56,11 @@ export default function OnboardingPermission() {
       footer={
         availability.available ? (
           <>
-            <Button label={s.permissionAllow} onPress={allow} loading={checking} />
+            <Button tone="cyan" label={s.permissionAllow} onPress={allow} loading={checking} />
             <Button variant="ghost" label={s.permissionLater} onPress={() => finish('manual')} />
           </>
         ) : (
-          <Button label={strings.common.continue} onPress={() => finish('manual')} />
+          <Button tone="cyan" label={strings.common.continue} onPress={() => finish('manual')} />
         )
       }
     >

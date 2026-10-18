@@ -45,7 +45,7 @@ export default function OnboardingApps() {
               {s.appsEmpty}
             </AppText>
           ) : null}
-          <Button label={strings.common.continue} onPress={onContinue} disabled={selected.length === 0} />
+          <Button tone="cyan" label={strings.common.continue} onPress={onContinue} disabled={selected.length === 0} />
         </>
       }
     >

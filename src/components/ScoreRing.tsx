@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { scoreTier } from '@/domain/score';
-import { colors, tierColor } from '@/theme';
+import { colors, fonts, palette, tierColor } from '@/theme';
 import { AppText } from './AppText';
 import { ProgressRing } from './ProgressRing';
 
@@ -13,7 +13,11 @@ interface ScoreRingProps {
 }
 
 export function ScoreRing({ score, label, size = 220 }: ScoreRingProps) {
-  const color = score === null ? colors.textFaint : tierColor(scoreTier(score));
+  const tier = score === null ? null : scoreTier(score);
+  // Brand gradient for good scores; tier color (pink / coral) when brainrot is high.
+  const ringColor = tier === null ? palette.cyan : tier === 'clean' || tier === 'good' ? undefined : tierColor(tier);
+  const numberSize = size * 0.26;
+
   return (
     <View
       style={styles.center}
@@ -21,15 +25,26 @@ export function ScoreRing({ score, label, size = 220 }: ScoreRingProps) {
       accessibilityRole="text"
       accessibilityLabel={`${label}: ${score ?? '?'} / 100`}
     >
-      <ProgressRing progress={score === null ? 0 : score / 100} size={size} color={color}>
-        <AppText variant="caption" color={colors.textMuted}>
+      <ProgressRing
+        progress={score === null ? 1 : score / 100}
+        size={size}
+        strokeWidth={size * 0.07}
+        color={ringColor}
+        glow
+      >
+        <View style={styles.row}>
+          <AppText style={{ fontFamily: fonts.heading, fontSize: numberSize, lineHeight: numberSize * 1.1 }}>
+            {score ?? '?'}
+          </AppText>
+          <AppText
+            style={{ fontFamily: fonts.heading, fontSize: numberSize * 0.5, lineHeight: numberSize * 0.6 }}
+            color={colors.textMuted}
+          >
+            /100
+          </AppText>
+        </View>
+        <AppText variant="body" color={colors.textMuted}>
           {label}
-        </AppText>
-        <AppText style={[styles.score, { fontSize: size * 0.3, lineHeight: size * 0.34 }]} color={color}>
-          {score ?? '?'}
-        </AppText>
-        <AppText variant="caption" color={colors.textMuted}>
-          / 100
         </AppText>
       </ProgressRing>
     </View>
@@ -38,5 +53,5 @@ export function ScoreRing({ score, label, size = 220 }: ScoreRingProps) {
 
 const styles = StyleSheet.create({
   center: { alignItems: 'center' },
-  score: { fontWeight: '800' },
+  row: { flexDirection: 'row', alignItems: 'baseline' },
 });

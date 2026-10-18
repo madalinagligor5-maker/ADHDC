@@ -1,12 +1,26 @@
 # ScrollFade
 
-> **Mai puțin scroll, mai mult focus.**
+> **Mai puțin scroll. Mai mult timp pentru tine.**
 
 ScrollFade este o aplicație mobilă (iOS + Android) care îți arată cât timp petreci în TikTok, Instagram Reels, YouTube Shorts și alte feed-uri short-form, îți dă un **Fade Score** zilnic (0–100) și te ajută să reduci scroll-ul cu provocări, streak-uri și un mod Focus.
 
 Fără cont, fără server, fără reclame. **Datele rămân pe dispozitiv.**
 
 ---
+
+## Brand
+
+| Element | Valoare |
+| --- | --- |
+| Logo | „S” cu gradient cyan → mint și trei linii roz de viteză (`src/components/LogoMark.tsx`, `assets/logo-mark.svg`) |
+| Fundal | Black `#000000`, Charcoal `#0B0B0F`, Surface `#14141B` |
+| Accente | Cyan `#22D3EE`, Mint `#34D399`, Pink `#F472B6` |
+| Brainrot ridicat | Coral `#FB7185` (doar pentru scoruri mici) |
+| Text | Off-white `#F8FAFC`, Muted gray `#94A3B8` |
+| Fonturi | **Outfit Bold** (titluri), **Inter** Regular / SemiBold (text) |
+| Taglines | „Mai puțin scroll. Mai mult timp pentru tine.” · „Less scroll. More you.” |
+
+Toate culorile și fonturile sunt definite în `src/theme/index.ts`. Iconițele din `assets/` sunt generate din `assets/logo-mark.svg`.
 
 ## Tehnologie
 

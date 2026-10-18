@@ -2,11 +2,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { Redirect } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
 import type { ComponentProps } from 'react';
-import type { ColorValue } from 'react-native';
+import { Platform, type ColorValue } from 'react-native';
 
 import { useStrings } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
-import { colors } from '@/theme';
+import { colors, fonts } from '@/theme';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -29,14 +29,19 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
+        tabBarStyle: [
+          { backgroundColor: colors.background, borderTopColor: colors.border },
+          // Web has no safe-area inset, so give the labels room explicitly.
+          Platform.OS === 'web' && { height: 68, paddingTop: 4, paddingBottom: 6 },
+        ],
+        tabBarLabelStyle: { fontFamily: fonts.body, fontSize: 11, lineHeight: 14 },
         sceneStyle: { backgroundColor: colors.background },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: strings.tabs.home, tabBarIcon: icon('pulse') }} />
-      <Tabs.Screen name="challenges" options={{ title: strings.tabs.challenges, tabBarIcon: icon('flag') }} />
-      <Tabs.Screen name="history" options={{ title: strings.tabs.history, tabBarIcon: icon('bar-chart') }} />
-      <Tabs.Screen name="settings" options={{ title: strings.tabs.settings, tabBarIcon: icon('settings') }} />
+      <Tabs.Screen name="index" options={{ title: strings.tabs.home, tabBarIcon: icon('home-outline') }} />
+      <Tabs.Screen name="history" options={{ title: strings.tabs.progress, tabBarIcon: icon('stats-chart-outline') }} />
+      <Tabs.Screen name="pause" options={{ title: strings.tabs.pause, tabBarIcon: icon('pause-circle-outline') }} />
+      <Tabs.Screen name="settings" options={{ title: strings.tabs.settings, tabBarIcon: icon('settings-outline') }} />
     </Tabs>
   );
 }

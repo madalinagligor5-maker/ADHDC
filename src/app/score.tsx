@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 import {
   AppText,
@@ -12,8 +12,10 @@ import {
   SectionTitle,
   StatRow,
 } from '@/components';
-import { APPS } from '@/domain/apps';
+import { APPS, ONBOARDING_APPS } from '@/domain/apps';
 import type { ScoreTier } from '@/domain/score';
+import { dayScore } from '@/domain/stats';
+import { emptyDay, type DayRecord } from '@/domain/types';
 import { useToday } from '@/hooks/useToday';
 import { format, formatDuration, useStrings } from '@/i18n';
 import { colors, tierColor } from '@/theme';
@@ -31,16 +33,34 @@ function signed(value: number): string {
   return rounded > 0 ? `+${rounded}` : String(rounded);
 }
 
-/** Daily score detail: how the number was built. */
+/** Sample day for "Explorează un exemplu" in onboarding. Never saved. */
+const EXAMPLE_DAY: DayRecord = {
+  ...emptyDay('example'),
+  usage: { tiktok: 20, instagram: 15, youtube: 7 },
+  hasUsage: true,
+};
+const EXAMPLE_SETTINGS = { dailyLimitMin: 60, trackedApps: ONBOARDING_APPS };
+
+/** Daily score detail: how the number was built. `?example=1` shows a sample day. */
 export default function ScoreDetail() {
   const strings = useStrings();
   const s = strings.scoreDetail;
   const today = useToday();
-  const { score, day, settings } = today;
+  const isExample = useLocalSearchParams<{ example?: string }>().example === '1';
+  const day = isExample ? EXAMPLE_DAY : today.day;
+  const settings = isExample ? EXAMPLE_SETTINGS : today.settings;
+  const score = isExample ? dayScore(EXAMPLE_DAY, EXAMPLE_SETTINGS) : today.score;
 
   return (
-    <Screen>
-      <ScreenHeader title={s.title} />
+    <Screen
+      footer={isExample ? <Button tone="cyan" label={s.exampleCta} onPress={() => router.back()} /> : undefined}
+    >
+      <ScreenHeader title={isExample ? s.exampleTitle : s.title} />
+      {isExample ? (
+        <AppText variant="body" color={colors.textMuted}>
+          {s.exampleBody}
+        </AppText>
+      ) : null}
 
       {!score || !day ? (
         <EmptyState
@@ -52,7 +72,7 @@ export default function ScoreDetail() {
         />
       ) : (
         <>
-          <ScoreRing score={score.score} label={strings.dashboard.scoreLabel} size={180} />
+          <ScoreRing score={score.score} label={strings.dashboard.scoreLabel} size={190} />
           <ScoreBadge tier={score.tier} />
 
           <SectionTitle>{s.breakdown}</SectionTitle>
@@ -98,7 +118,9 @@ export default function ScoreDetail() {
               />
             ))}
           </Card>
-          <Button variant="ghost" label={strings.dashboard.editTime} onPress={() => router.push('/manual-entry')} />
+          {!isExample ? (
+            <Button variant="ghost" label={strings.dashboard.editTime} onPress={() => router.push('/manual-entry')} />
+          ) : null}
         </>
       )}
 

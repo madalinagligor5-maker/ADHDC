@@ -3,12 +3,12 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { AppText, Button, ProgressRing, Screen, ScreenHeader, Segmented } from '@/components';
+import { AppText, Button, LogoMark, ProgressRing, Screen, ScreenHeader, Segmented } from '@/components';
 import { SCORE_RULES } from '@/domain/score';
 import type { FocusDuration } from '@/domain/types';
 import { format, useStrings } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
-import { colors, spacing } from '@/theme';
+import { colors, fonts, spacing } from '@/theme';
 import { confirm } from '@/utils/confirm';
 
 const DURATIONS: FocusDuration[] = [15, 30, 45, 60];
@@ -59,15 +59,22 @@ export default function FocusScreen() {
     });
     if (!stop) return;
     finishFocus(false);
-    router.back();
   };
 
   if (earned !== null) {
     return (
-      <Screen contentStyle={styles.center} footer={<Button label={s.doneCta} onPress={() => router.back()} />}>
-        <AppText style={styles.bigEmoji} align="center">
-          🧠✨
-        </AppText>
+      <Screen edges={['top']} contentStyle={styles.center} footer={
+          <Button
+            label={s.doneCta}
+            onPress={() => {
+              setEarned(null);
+              router.navigate('/');
+            }}
+          />
+        }>
+        <View style={styles.ring}>
+          <LogoMark size={120} />
+        </View>
         <AppText variant="title" align="center">
           {s.doneTitle}
         </AppText>
@@ -82,12 +89,12 @@ export default function FocusScreen() {
     const elapsed = 1 - remainingMs / totalMs;
     const message = s.messages[Math.floor((totalMs - remainingMs) / 120_000) % s.messages.length];
     return (
-      <Screen contentStyle={styles.center} footer={<Button variant="ghost" label={s.stop} onPress={giveUp} />}>
-        <AppText variant="label" color={colors.accent} align="center">
+      <Screen edges={['top']} contentStyle={styles.center} footer={<Button variant="ghost" label={s.stop} onPress={giveUp} />}>
+        <AppText variant="title" align="center">
           {s.title}
         </AppText>
         <View style={styles.ring}>
-          <ProgressRing progress={elapsed} size={260} strokeWidth={16}>
+          <ProgressRing progress={elapsed} size={260} strokeWidth={16} glow>
             <AppText style={styles.clock} accessibilityRole="timer">
               {formatClock(remainingMs)}
             </AppText>
@@ -104,8 +111,8 @@ export default function FocusScreen() {
   }
 
   return (
-    <Screen footer={<Button label={s.start} onPress={() => startFocus(duration)} />}>
-      <ScreenHeader title={s.title} modal />
+    <Screen edges={['top']} footer={<Button label={s.start} onPress={() => startFocus(duration)} />}>
+      <ScreenHeader title={s.title} showBack={false} />
       <AppText variant="body" color={colors.textMuted}>
         {s.chooseDuration}
       </AppText>
@@ -132,6 +139,5 @@ export default function FocusScreen() {
 const styles = StyleSheet.create({
   center: { flexGrow: 1, justifyContent: 'center', gap: spacing.lg },
   ring: { alignItems: 'center', marginVertical: spacing.md },
-  clock: { fontSize: 56, lineHeight: 64, fontWeight: '800', color: colors.text },
-  bigEmoji: { fontSize: 72, lineHeight: 84 },
+  clock: { fontFamily: fonts.heading, fontSize: 56, lineHeight: 64, color: colors.text },
 });

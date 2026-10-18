@@ -7,7 +7,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "backgroundColor": "#070B14",
+    "backgroundColor": "#000000",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "app.scrollfade.mobile",
@@ -18,7 +18,7 @@
     "android": {
       "package": "app.scrollfade.mobile",
       "adaptiveIcon": {
-        "backgroundColor": "#070B14",
+        "backgroundColor": "#000000",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -34,7 +34,17 @@
       [
         "expo-notifications",
         {
-          "color": "#2EF2C2"
+          "color": "#22D3EE"
+        }
+      ],
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "backgroundColor": "#000000"
         }
       ]
     ],
@@ -45,8 +55,8 @@
       "bundler": "metro",
       "output": "single",
       "favicon": "./assets/favicon.png",
-      "backgroundColor": "#070B14",
-      "themeColor": "#070B14",
+      "backgroundColor": "#000000",
+      "themeColor": "#000000",
       "name": "ScrollFade",
       "shortName": "ScrollFade",
       "lang": "ro"

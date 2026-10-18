@@ -36,8 +36,8 @@ export default function ChallengesScreen() {
   }, [days, today.date, plan.historyDays]);
 
   return (
-    <Screen edges={['top']}>
-      <ScreenHeader title={s.title} showBack={false} />
+    <Screen>
+      <ScreenHeader title={s.title} />
 
       <SectionTitle>{s.today}</SectionTitle>
       <ChallengeCard

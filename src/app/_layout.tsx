@@ -1,10 +1,17 @@
+import { Inter_400Regular, Inter_600SemiBold } from '@expo-google-fonts/inter';
+import { Outfit_700Bold } from '@expo-google-fonts/outfit';
+import { useFonts } from 'expo-font';
 import { DarkTheme, Stack, ThemeProvider, type ErrorBoundaryProps } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { ErrorState, LoadingState, Screen } from '@/components';
 import { useHydrated } from '@/store/useAppStore';
-import { colors } from '@/theme';
+import { colors, fonts } from '@/theme';
+
+SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 const navigationTheme = {
   ...DarkTheme,
@@ -28,17 +35,28 @@ export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
 
 export default function RootLayout() {
   const hydrated = useHydrated();
+  const [fontsLoaded, fontError] = useFonts({
+    [fonts.heading]: Outfit_700Bold,
+    [fonts.body]: Inter_400Regular,
+    [fonts.bodySemiBold]: Inter_600SemiBold,
+  });
+  // If fonts fail to load we still start, with system fonts.
+  const ready = hydrated && (fontsLoaded || fontError !== null);
+
+  useEffect(() => {
+    if (ready) SplashScreen.hideAsync().catch(() => undefined);
+  }, [ready]);
 
   return (
     <ThemeProvider value={navigationTheme}>
       <StatusBar style="light" />
-      {hydrated ? (
+      {ready ? (
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
           <Stack.Screen name="score" />
+          <Stack.Screen name="challenges" />
           <Stack.Screen name="manual-entry" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="focus" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
           <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
         </Stack>
       ) : (
