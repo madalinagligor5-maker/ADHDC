@@ -20,7 +20,7 @@ const navigationTheme = {
     background: colors.background,
     card: colors.surface,
     border: colors.border,
-    primary: colors.accent,
+    primary: colors.action,
     text: colors.text,
   },
 };
@@ -58,6 +58,8 @@ export default function RootLayout() {
           <Stack.Screen name="challenges" />
           <Stack.Screen name="manual-entry" options={{ presentation: 'modal' }} />
           <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="privacy" />
+          <Stack.Screen name="terms" />
         </Stack>
       ) : (
         <View style={{ flex: 1, backgroundColor: colors.background }}>

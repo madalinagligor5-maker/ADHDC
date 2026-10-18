@@ -1,81 +1,86 @@
-import { totalMinutes, type AppId, type UsageMap } from './apps';
+import { totalMinutes } from './apps';
 import { addDays, type DateKey } from './date';
-import { computeScore, type ScoreBreakdown } from './score';
-import type { DayRecord, FocusDuration, Settings } from './types';
+import { computeScore } from './score';
+import { hasUsage, type DayRecord } from './types';
 
 export type DaysById = Record<DateKey, DayRecord | undefined>;
 
-export function completedFocusDurations(day: DayRecord | undefined): FocusDuration[] {
-  return (day?.focusSessions ?? [])
-    .filter((session) => session.completed)
-    .map((session) => session.durationMin);
+export function dayMinutes(day: DayRecord | undefined): number | null {
+  return hasUsage(day) ? totalMinutes(day.usage) : null;
 }
 
-export function dayMinutes(day: DayRecord | undefined, trackedApps: readonly AppId[]): number {
-  return day ? totalMinutes(day.usage, trackedApps) : 0;
+export function dayScore(day: DayRecord | undefined): number | null {
+  return hasUsage(day) ? computeScore(totalMinutes(day.usage), day.limitMin) : null;
 }
 
-/** Score for a day, or null when there is no usage data to score yet. */
-export function dayScore(
-  day: DayRecord | undefined,
-  settings: Pick<Settings, 'dailyLimitMin' | 'trackedApps'>,
-): ScoreBreakdown | null {
-  if (!day || !day.hasUsage) return null;
-  return computeScore({
-    minutes: dayMinutes(day, settings.trackedApps),
-    dailyLimitMin: settings.dailyLimitMin,
-    challengeCompleted: day.challengeCompleted,
-    completedFocus: completedFocusDurations(day),
-  });
-}
-
-/** A day keeps the streak alive if the limit was respected or the challenge was completed. */
-export function dayKeepsStreak(
-  day: DayRecord | undefined,
-  settings: Pick<Settings, 'dailyLimitMin' | 'trackedApps'>,
-): boolean {
-  if (!day) return false;
-  if (day.challengeCompleted) return true;
-  return day.hasUsage && dayMinutes(day, settings.trackedApps) <= settings.dailyLimitMin;
+/** A day counts as "goal met" only with recorded data within that day's limit. */
+export function dayMetGoal(day: DayRecord | undefined): boolean {
+  const minutes = dayMinutes(day);
+  return day !== undefined && minutes !== null && minutes <= day.limitMin;
 }
 
 /**
- * Consecutive qualifying days ending today. Today is still in progress, so if
- * it does not qualify yet the streak is counted up to yesterday.
+ * Consecutive finished days with data and the goal met, ending yesterday.
+ * Today is never counted because it is not over yet; days without data break the streak.
  */
-export function currentStreak(
-  days: DaysById,
-  today: DateKey,
-  settings: Pick<Settings, 'dailyLimitMin' | 'trackedApps'>,
-): number {
-  let cursor = dayKeepsStreak(days[today], settings) ? today : addDays(today, -1);
+export function currentStreak(days: DaysById, today: DateKey): number {
+  let cursor = addDays(today, -1);
   let streak = 0;
-  while (dayKeepsStreak(days[cursor], settings)) {
+  while (dayMetGoal(days[cursor])) {
     streak += 1;
     cursor = addDays(cursor, -1);
   }
   return streak;
 }
 
-export function sumUsage(records: (DayRecord | undefined)[], apps: readonly AppId[]): UsageMap {
-  const totals: UsageMap = {};
-  for (const record of records) {
-    if (!record) continue;
-    for (const id of apps) {
-      totals[id] = (totals[id] ?? 0) + (record.usage[id] ?? 0);
-    }
-  }
-  return totals;
-}
-
-export interface ScoredDay {
+export interface SeriesPoint {
   date: DateKey;
-  score: number;
-  minutes: number;
+  /** `null` = no data for that day (not the same as 0 minutes). */
+  minutes: number | null;
+  score: number | null;
+  limitMin: number | null;
+  metGoal: boolean;
 }
 
-export function bestAndWorst(scored: ScoredDay[]): { best?: ScoredDay; worst?: ScoredDay } {
-  if (scored.length === 0) return {};
-  const sorted = [...scored].sort((a, b) => b.score - a.score || a.minutes - b.minutes);
-  return { best: sorted[0], worst: sorted.length > 1 ? sorted[sorted.length - 1] : undefined };
+export function buildSeries(days: DaysById, keys: DateKey[]): SeriesPoint[] {
+  return keys.map((date) => {
+    const day = days[date];
+    return {
+      date,
+      minutes: dayMinutes(day),
+      score: dayScore(day),
+      limitMin: hasUsage(day) ? day.limitMin : null,
+      metGoal: dayMetGoal(day),
+    };
+  });
+}
+
+export interface PeriodSummary {
+  daysWithData: number;
+  daysMetGoal: number;
+  /** Average minutes per day with data; `null` when there is no data. */
+  averageMinutes: number | null;
+}
+
+export function summarize(series: SeriesPoint[]): PeriodSummary {
+  const withData = series.filter((point) => point.minutes !== null);
+  const total = withData.reduce((sum, point) => sum + (point.minutes ?? 0), 0);
+  return {
+    daysWithData: withData.length,
+    daysMetGoal: series.filter((point) => point.metGoal).length,
+    averageMinutes: withData.length === 0 ? null : total / withData.length,
+  };
+}
+
+/** Minimum days with data in *each* period before two periods are compared. */
+export const MIN_DAYS_FOR_COMPARISON = 4;
+
+/**
+ * Difference in average daily minutes (previous − current). Positive means usage
+ * went down. Returns `null` when either period has too little data.
+ */
+export function compareAverages(current: PeriodSummary, previous: PeriodSummary): number | null {
+  if (current.daysWithData < MIN_DAYS_FOR_COMPARISON || previous.daysWithData < MIN_DAYS_FOR_COMPARISON) return null;
+  if (current.averageMinutes === null || previous.averageMinutes === null) return null;
+  return Math.round(previous.averageMinutes - current.averageMinutes);
 }

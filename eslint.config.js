@@ -7,4 +7,9 @@ module.exports = defineConfig([
   {
     ignores: ['dist/*', 'node_modules/*', 'modules/*/android/*'],
   },
+  {
+    // jest.mock factories must use require().
+    files: ['**/__tests__/**'],
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
 ]);

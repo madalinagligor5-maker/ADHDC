@@ -9,8 +9,8 @@ import { Card } from './Card';
 export function LoadingState({ label }: { label?: string }) {
   const strings = useStrings();
   return (
-    <View style={styles.center} accessibilityRole="progressbar">
-      <ActivityIndicator size="large" color={colors.accent} />
+    <View style={styles.center} accessibilityRole="progressbar" accessibilityLabel={label ?? strings.common.loading}>
+      <ActivityIndicator size="large" color={colors.action} />
       <AppText variant="caption" color={colors.textMuted}>
         {label ?? strings.common.loading}
       </AppText>
@@ -19,19 +19,15 @@ export function LoadingState({ label }: { label?: string }) {
 }
 
 interface EmptyStateProps {
-  emoji?: string;
   title: string;
   body?: string;
   actionLabel?: string;
   onAction?: () => void;
 }
 
-export function EmptyState({ emoji = '🌱', title, body, actionLabel, onAction }: EmptyStateProps) {
+export function EmptyState({ title, body, actionLabel, onAction }: EmptyStateProps) {
   return (
     <Card style={styles.empty}>
-      <AppText variant="title" align="center">
-        {emoji}
-      </AppText>
       <AppText variant="heading" align="center">
         {title}
       </AppText>
@@ -55,7 +51,7 @@ export function ErrorState({ title, body, onRetry }: ErrorStateProps) {
   const strings = useStrings();
   return (
     <Card style={[styles.empty, styles.error]}>
-      <AppText variant="heading" align="center" color={colors.coral}>
+      <AppText variant="heading" align="center" color={colors.warning} accessibilityRole="alert">
         {title ?? strings.common.errorTitle}
       </AppText>
       <AppText variant="body" align="center" color={colors.textMuted}>
@@ -67,7 +63,13 @@ export function ErrorState({ title, body, onRetry }: ErrorStateProps) {
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, backgroundColor: colors.background },
-  empty: { alignItems: 'stretch', paddingVertical: spacing.lg },
-  error: { borderColor: colors.coral, backgroundColor: colors.coralSoft },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.md,
+    backgroundColor: colors.background,
+  },
+  empty: { paddingVertical: spacing.lg, gap: spacing.md },
+  error: { borderColor: colors.warning },
 });

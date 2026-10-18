@@ -8,22 +8,27 @@ interface StatTileProps {
   label: string;
   value: string;
   valueColor?: string;
+  footnote?: string;
 }
 
-export function StatTile({ label, value, valueColor = colors.text }: StatTileProps) {
+export function StatTile({ label, value, valueColor = colors.text, footnote }: StatTileProps) {
   return (
     <Card style={styles.tile}>
       <AppText variant="caption" color={colors.textMuted}>
         {label}
       </AppText>
-      <AppText variant="heading" color={valueColor} style={styles.value}>
+      <AppText variant="number" color={valueColor}>
         {value}
       </AppText>
+      {footnote ? (
+        <AppText variant="caption" color={colors.textFaint}>
+          {footnote}
+        </AppText>
+      ) : null}
     </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  tile: { flex: 1, gap: 4 },
-  value: { fontSize: 24, lineHeight: 30 },
+  tile: { flexGrow: 1, flexBasis: 140, gap: 4 },
 });

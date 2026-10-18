@@ -24,7 +24,7 @@ export function ScreenHeader({ title, modal = false, showBack = true }: ScreenHe
           accessibilityRole="button"
           accessibilityLabel={modal ? strings.common.close : strings.common.back}
           onPress={goBack}
-          hitSlop={12}
+          hitSlop={8}
           style={styles.icon}
         >
           <Ionicons name={modal ? 'close' : 'chevron-back'} size={24} color={colors.text} />
@@ -40,10 +40,10 @@ export function ScreenHeader({ title, modal = false, showBack = true }: ScreenHe
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   icon: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: radius.pill,
-    backgroundColor: colors.surfaceAlt,
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },

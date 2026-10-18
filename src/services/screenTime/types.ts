@@ -1,27 +1,24 @@
 import type { AppId, UsageMap } from '@/domain/apps';
 import type { DateKey } from '@/domain/date';
 
-export type UnavailableReason = 'ios' | 'needs-native-build' | 'web';
+export type UnavailableReason = 'ios-entitlement' | 'needs-dev-build' | 'web';
 
-export type ScreenTimeAvailability =
-  | { available: true }
-  | { available: false; reason: UnavailableReason };
+export type ProviderAvailability = { available: true } | { available: false; reason: UnavailableReason };
 
-export type ScreenTimePermission = 'granted' | 'denied' | 'unavailable';
+export type UsagePermission = 'granted' | 'denied' | 'not-required' | 'unavailable';
 
 /**
- * Single data contract shared by every usage source. Manual entry and the
- * automatic platform integrations all produce a `UsageMap` (minutes per app)
- * for a given day, which the store saves and the score is computed from.
+ * One contract for every usage source. Each returns minutes per app for a day;
+ * the store decides how the result is saved (one source per day, manual wins).
  */
-export interface ScreenTimeProvider {
-  readonly kind: 'android-usage-stats' | 'ios-screen-time' | 'manual';
-  getAvailability(): ScreenTimeAvailability;
-  getPermission(): Promise<ScreenTimePermission>;
+export interface UsageProvider {
+  readonly kind: 'manual' | 'demo' | 'android-usage-stats' | 'ios-screen-time';
+  getAvailability(): ProviderAvailability;
+  getPermission(): Promise<UsagePermission>;
   /**
-   * Starts the permission flow. On Android this opens system settings, so the
-   * result is only known once the app returns to the foreground.
+   * Starts the permission flow after an explicit user action. On Android this
+   * opens system settings, so the outcome is only known when the app returns.
    */
-  requestPermission(): Promise<ScreenTimePermission>;
+  requestPermission(): Promise<UsagePermission>;
   getUsage(date: DateKey, apps: readonly AppId[]): Promise<UsageMap>;
 }

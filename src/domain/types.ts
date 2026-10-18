@@ -1,55 +1,51 @@
 import type { AppId, UsageMap } from './apps';
+import type { ChallengeId } from './challenges';
 import type { DateKey } from './date';
 
 export type Language = 'ro' | 'en';
 
-/** Where a day's usage numbers came from. */
+export type Purpose = 'learning' | 'rest' | 'people' | 'projects' | 'less-scroll';
+
+export const PURPOSES: Purpose[] = ['learning', 'rest', 'people', 'projects', 'less-scroll'];
+
+/** Where a day's numbers came from. A day has exactly one source (no mixing). */
 export type UsageSource = 'manual' | 'auto';
 
-/** How the user wants usage to be collected. */
-export type ScreenTimeMode = 'auto' | 'manual';
-
-export type FocusDuration = 15 | 30 | 45 | 60;
-
-export interface FocusSession {
-  id: string;
-  startedAt: number;
-  durationMin: FocusDuration;
-  completed: boolean;
-}
+export type ScreenTimeMode = 'manual' | 'auto';
 
 export interface DayRecord {
   date: DateKey;
   usage: UsageMap;
-  /** True once the user (or the automatic provider) recorded usage for this day. */
-  hasUsage: boolean;
   source: UsageSource;
-  challengeId: string | null;
-  challengeCompleted: boolean;
-  focusSessions: FocusSession[];
+  /** Daily limit that applied to this day, so later goal changes don't rewrite history. */
+  limitMin: number;
+  challengeId: ChallengeId | null;
+  challengeDone: boolean;
+  /** True when the app itself confirmed the challenge (e.g. a finished 20-minute pause). */
+  challengeVerified: boolean;
 }
 
 export interface Settings {
   language: Language;
   dailyLimitMin: number;
+  purpose: Purpose | null;
   trackedApps: AppId[];
   notificationsEnabled: boolean;
   screenTimeMode: ScreenTimeMode;
 }
 
-export interface ActiveFocus {
-  startedAt: number;
-  durationMin: FocusDuration;
-}
-
-export function emptyDay(date: DateKey): DayRecord {
+export function emptyDay(date: DateKey, limitMin: number): DayRecord {
   return {
     date,
     usage: {},
-    hasUsage: false,
     source: 'manual',
+    limitMin,
     challengeId: null,
-    challengeCompleted: false,
-    focusSessions: [],
+    challengeDone: false,
+    challengeVerified: false,
   };
+}
+
+export function hasUsage(day: DayRecord | undefined): day is DayRecord {
+  return day !== undefined && Object.keys(day.usage).length > 0;
 }

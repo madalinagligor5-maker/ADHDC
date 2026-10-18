@@ -1,43 +1,75 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { topApps } from '@/domain/apps';
-import { pickDailyChallenge } from '@/domain/challenges';
-import { todayKey } from '@/domain/date';
-import { currentStreak, dayMinutes, dayScore } from '@/domain/stats';
+import { activeChallenge } from '@/domain/challenges';
+import { todayKey, type DateKey } from '@/domain/date';
+import { buildDemoDays, buildDemoPauses, DEMO_LIMIT } from '@/domain/demo';
+import type { PauseSession } from '@/domain/pause';
+import { currentStreak, dayMinutes, dayScore, type DaysById } from '@/domain/stats';
+import type { DayRecord } from '@/domain/types';
 import { useAppStore } from '@/store/useAppStore';
 
-/** Today's date key, refreshed when the day rolls over while the app is open. */
-export function useTodayKey(): string {
+/** Today's date key, refreshed when the day rolls over (or the time zone changes) while open. */
+export function useTodayKey(): DateKey {
   const [key, setKey] = useState(todayKey);
   useEffect(() => {
     const timer = setInterval(() => {
       const next = todayKey();
       setKey((previous) => (previous === next ? previous : next));
-    }, 60_000);
+    }, 30_000);
     return () => clearInterval(timer);
   }, []);
   return key;
 }
 
-/** Everything the dashboard needs about today, derived from the store. */
-export function useToday() {
-  const date = useTodayKey();
-  const days = useAppStore((state) => state.days);
-  const settings = useAppStore((state) => state.settings);
+export interface DataView {
+  isDemo: boolean;
+  days: DaysById;
+  pauses: PauseSession[];
+  /** Limit used for days that have no record yet. */
+  currentLimitMin: number;
+}
 
+/** Real data, or the clearly-labelled demo dataset. Screens never mix the two. */
+export function useDataView(): DataView {
+  const today = useTodayKey();
+  const demo = useAppStore((state) => state.demo);
+  const days = useAppStore((state) => state.days);
+  const pauses = useAppStore((state) => state.pauses);
+  const limit = useAppStore((state) => state.settings.dailyLimitMin);
+
+  return useMemo(
+    () =>
+      demo
+        ? { isDemo: true, days: buildDemoDays(today), pauses: buildDemoPauses(today), currentLimitMin: DEMO_LIMIT }
+        : { isDemo: false, days, pauses, currentLimitMin: limit },
+    [demo, today, days, pauses, limit],
+  );
+}
+
+export interface TodaySummary extends DataView {
+  date: DateKey;
+  day: DayRecord | undefined;
+  minutes: number | null;
+  score: number | null;
+  limitMin: number;
+  streak: number;
+  challenge: ReturnType<typeof activeChallenge>;
+}
+
+export function useToday(): TodaySummary {
+  const date = useTodayKey();
+  const view = useDataView();
   return useMemo(() => {
-    const day = days[date];
-    const challenge = pickDailyChallenge(date, settings.trackedApps);
+    const day = view.days[date];
     return {
+      ...view,
       date,
       day,
-      settings,
-      challenge,
-      challengeCompleted: Boolean(day?.challengeCompleted),
-      minutes: dayMinutes(day, settings.trackedApps),
-      top: day ? topApps(day.usage, settings.trackedApps) : [],
-      score: dayScore(day, settings),
-      streak: currentStreak(days, date, settings),
+      minutes: dayMinutes(day),
+      score: dayScore(day),
+      limitMin: day?.limitMin ?? view.currentLimitMin,
+      streak: currentStreak(view.days, date),
+      challenge: activeChallenge(date, day?.challengeId),
     };
-  }, [date, days, settings]);
+  }, [view, date]);
 }

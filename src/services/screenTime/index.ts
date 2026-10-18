@@ -1,20 +1,21 @@
 import { Platform } from 'react-native';
 
-import { androidProvider } from './androidProvider';
-import { iosProvider } from './iosProvider';
-import type { ScreenTimeProvider } from './types';
+import { androidUsageProvider } from './androidUsageProvider';
+import { iosUsageProvider } from './iosUsageProvider';
+import type { UsageProvider } from './types';
 
-export { manualProvider } from './manualProvider';
+export { demoUsageProvider } from './demoUsageProvider';
+export { manualUsageProvider } from './manualUsageProvider';
 export * from './types';
 
-const webProvider: ScreenTimeProvider = {
-  ...iosProvider,
+const webProvider: UsageProvider = {
+  ...iosUsageProvider,
   getAvailability: () => ({ available: false, reason: 'web' }),
 };
 
-/** The automatic provider for the current platform (may be unavailable). */
-export const automaticProvider: ScreenTimeProvider = Platform.select({
-  android: androidProvider,
-  ios: iosProvider,
+/** The native provider for this platform. Check `getAvailability()` before offering it. */
+export const nativeUsageProvider: UsageProvider = Platform.select({
+  android: androidUsageProvider,
+  ios: iosUsageProvider,
   default: webProvider,
 });

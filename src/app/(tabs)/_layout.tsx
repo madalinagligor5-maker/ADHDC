@@ -20,14 +20,16 @@ function icon(name: IconName) {
 export default function TabsLayout() {
   const strings = useStrings();
   const onboarded = useAppStore((state) => state.onboarded);
+  const demo = useAppStore((state) => state.demo);
 
-  if (!onboarded) return <Redirect href="/onboarding" />;
+  // Demo mode can be explored before onboarding; real use requires it.
+  if (!onboarded && !demo) return <Redirect href="/onboarding" />;
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.accent,
+        tabBarActiveTintColor: colors.action,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: [
           { backgroundColor: colors.background, borderTopColor: colors.border },

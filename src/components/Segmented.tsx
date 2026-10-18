@@ -1,17 +1,18 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors, radius, spacing } from '@/theme';
+import { colors, radius, spacing, TOUCH_TARGET } from '@/theme';
 import { AppText } from './AppText';
 
 interface SegmentedProps<T extends string | number> {
   options: { value: T; label: string; disabled?: boolean }[];
   value: T;
   onChange: (value: T) => void;
+  accessibilityLabel?: string;
 }
 
-export function Segmented<T extends string | number>({ options, value, onChange }: SegmentedProps<T>) {
+export function Segmented<T extends string | number>({ options, value, onChange, accessibilityLabel }: SegmentedProps<T>) {
   return (
-    <View style={styles.container} accessibilityRole="radiogroup">
+    <View style={styles.container} accessibilityRole="radiogroup" accessibilityLabel={accessibilityLabel}>
       {options.map((option) => {
         const active = option.value === value;
         return (
@@ -23,7 +24,7 @@ export function Segmented<T extends string | number>({ options, value, onChange 
             onPress={() => onChange(option.value)}
             style={[styles.segment, active && styles.active, option.disabled && styles.disabled]}
           >
-            <AppText variant="label" align="center" color={active ? colors.onAccent : colors.text}>
+            <AppText variant="label" align="center" color={active ? colors.onAction : colors.text}>
               {option.label}
             </AppText>
           </Pressable>
@@ -36,19 +37,22 @@ export function Segmented<T extends string | number>({ options, value, onChange 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radius.pill,
+    flexWrap: 'wrap',
+    backgroundColor: colors.surfaceRaised,
+    borderRadius: radius.lg,
     padding: spacing.xs,
     gap: spacing.xs,
   },
   segment: {
-    flex: 1,
-    minHeight: 44,
-    borderRadius: radius.pill,
+    flexGrow: 1,
+    flexBasis: 0,
+    minWidth: 56,
+    minHeight: TOUCH_TARGET - 4,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.sm,
   },
-  active: { backgroundColor: colors.accent },
+  active: { backgroundColor: colors.action },
   disabled: { opacity: 0.4 },
 });

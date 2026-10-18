@@ -1,63 +1,56 @@
 import * as Haptics from 'expo-haptics';
-import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet } from 'react-native';
 
-import { colors, fonts, radius, spacing } from '@/theme';
+import { colors, fonts, radius, spacing, TOUCH_TARGET } from '@/theme';
 import { AppText } from './AppText';
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost';
-
-/** Primary buttons are mint inside the app and cyan in onboarding, as in the brand screens. */
-type ButtonTone = 'mint' | 'cyan';
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 interface ButtonProps {
   label: string;
   onPress: () => void;
   variant?: ButtonVariant;
-  tone?: ButtonTone;
   disabled?: boolean;
   loading?: boolean;
   accessibilityHint?: string;
 }
 
+const TEXT_COLOR: Record<ButtonVariant, string> = {
+  primary: colors.onAction,
+  secondary: colors.text,
+  ghost: colors.action,
+  danger: colors.warning,
+};
+
 export function Button({
   label,
   onPress,
   variant = 'primary',
-  tone = 'mint',
   disabled = false,
   loading = false,
   accessibilityHint,
 }: ButtonProps) {
   const inactive = disabled || loading;
   const handlePress = () => {
-    if (variant === 'primary') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
+    if (variant === 'primary' && Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
+    }
     onPress();
   };
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityState={{ disabled: inactive }}
+      accessibilityState={{ disabled: inactive, busy: loading }}
       accessibilityHint={accessibilityHint}
       disabled={inactive}
       onPress={handlePress}
-      style={({ pressed }) => [
-        styles.base,
-        styles[variant],
-        variant === 'primary' && tone === 'cyan' && styles.cyan,
-        inactive && styles.disabled,
-        pressed && styles.pressed,
-      ]}
+      style={({ pressed }) => [styles.base, styles[variant], inactive && styles.disabled, pressed && styles.pressed]}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? colors.onAccent : colors.accent} />
+        <ActivityIndicator color={TEXT_COLOR[variant]} />
       ) : (
-        <AppText
-          variant="label"
-          align="center"
-          color={variant === 'primary' ? colors.onAccent : variant === 'secondary' ? colors.text : colors.accentAlt}
-          style={styles.label}
-        >
+        <AppText align="center" color={TEXT_COLOR[variant]} style={variant === 'primary' ? styles.primaryLabel : styles.label}>
           {label}
         </AppText>
       )}
@@ -72,12 +65,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
   },
-  primary: { backgroundColor: colors.accent },
-  cyan: { backgroundColor: colors.accentAlt },
-  secondary: { backgroundColor: colors.surfaceAlt, borderWidth: 1, borderColor: colors.border },
-  ghost: { backgroundColor: 'transparent', minHeight: 44 },
+  primary: { backgroundColor: colors.action },
+  secondary: { backgroundColor: colors.surfaceRaised, borderWidth: 1, borderColor: colors.border },
+  ghost: { backgroundColor: 'transparent', minHeight: TOUCH_TARGET },
+  danger: { backgroundColor: colors.warningSoft, borderWidth: 1, borderColor: colors.warning },
   disabled: { opacity: 0.4 },
-  pressed: { opacity: 0.8, transform: [{ scale: 0.98 }] },
-  label: { fontFamily: fonts.heading, fontSize: 18, lineHeight: 24 },
+  pressed: { opacity: 0.8 },
+  primaryLabel: { fontFamily: fonts.heading, fontSize: 18, lineHeight: 24 },
+  label: { fontFamily: fonts.bodySemiBold, fontSize: 16, lineHeight: 22 },
 });

@@ -1,49 +1,49 @@
 import { StyleSheet, View } from 'react-native';
 
-import { scoreTier } from '@/domain/score';
-import { colors, fonts, palette, tierColor } from '@/theme';
+import { colors, fonts, palette } from '@/theme';
 import { AppText } from './AppText';
 import { ProgressRing } from './ProgressRing';
 
 interface ScoreRingProps {
-  /** `null` renders the unknown "?" state. */
+  /** `null` = no data: shows "?" and never a made-up value. */
   score: number | null;
   label: string;
   size?: number;
 }
 
 export function ScoreRing({ score, label, size = 220 }: ScoreRingProps) {
-  const tier = score === null ? null : scoreTier(score);
-  // Brand gradient for good scores; tier color (pink / coral) when brainrot is high.
-  const ringColor = tier === null ? palette.cyan : tier === 'clean' || tier === 'good' ? undefined : tierColor(tier);
   const numberSize = size * 0.26;
-
   return (
     <View
       style={styles.center}
       accessible
-      accessibilityRole="text"
-      accessibilityLabel={`${label}: ${score ?? '?'} / 100`}
+      accessibilityRole="image"
+      accessibilityLabel={`${label}: ${score === null ? '?' : score} / 100`}
     >
       <ProgressRing
         progress={score === null ? 1 : score / 100}
         size={size}
-        strokeWidth={size * 0.07}
-        color={ringColor}
+        strokeWidth={Math.max(10, size * 0.065)}
+        color={score === null ? palette.cyan : undefined}
         glow
+        animated={score !== null}
       >
         <View style={styles.row}>
-          <AppText style={{ fontFamily: fonts.heading, fontSize: numberSize, lineHeight: numberSize * 1.1 }}>
-            {score ?? '?'}
+          <AppText
+            allowFontScaling={false}
+            style={{ fontFamily: fonts.heading, fontSize: numberSize, lineHeight: numberSize * 1.15 }}
+          >
+            {score === null ? '?' : score}
           </AppText>
           <AppText
-            style={{ fontFamily: fonts.heading, fontSize: numberSize * 0.5, lineHeight: numberSize * 0.6 }}
+            allowFontScaling={false}
             color={colors.textMuted}
+            style={{ fontFamily: fonts.heading, fontSize: numberSize * 0.45, lineHeight: numberSize * 0.6 }}
           >
             /100
           </AppText>
         </View>
-        <AppText variant="body" color={colors.textMuted}>
+        <AppText variant="body" color={colors.textMuted} numberOfLines={1}>
           {label}
         </AppText>
       </ProgressRing>

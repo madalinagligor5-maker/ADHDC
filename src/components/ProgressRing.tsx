@@ -1,7 +1,8 @@
-import { useId, type ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useEffect, useId, useState, type ReactNode } from 'react';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { brandGradient, colors } from '@/theme';
 
 interface ProgressRingProps {
@@ -9,11 +10,13 @@ interface ProgressRingProps {
   progress: number;
   size?: number;
   strokeWidth?: number;
-  /** A solid color; when omitted the ring uses the cyan → mint brand gradient. */
+  /** Solid color; when omitted the ring uses the cyan → mint brand gradient. */
   color?: string;
   trackColor?: string;
-  /** Soft outer glow in the ring color. */
+  /** Very soft glow, meant for the score ring only. */
   glow?: boolean;
+  /** Animate changes (skipped when the OS asks for reduced motion). */
+  animated?: boolean;
   children?: ReactNode;
 }
 
@@ -22,21 +25,47 @@ export function ProgressRing({
   size = 220,
   strokeWidth = 14,
   color,
-  trackColor = colors.surfaceAlt,
+  trackColor = colors.surfaceRaised,
   glow = false,
+  animated = false,
   children,
 }: ProgressRingProps) {
   const gradientId = `ring-${useId().replace(/:/g, '')}`;
+  const reducedMotion = useReducedMotion();
+  const target = Math.max(0, Math.min(1, progress));
+  const [shown, setShown] = useState(animated ? 0 : target);
+  const [value] = useState(() => new Animated.Value(animated ? 0 : target));
+
+  useEffect(() => {
+    if (!animated || reducedMotion) {
+      value.stopAnimation();
+      value.setValue(target);
+      return;
+    }
+    const id = value.addListener(({ value: next }) => setShown(next));
+    Animated.timing(value, {
+      toValue: target,
+      duration: 600,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start();
+    return () => value.removeListener(id);
+  }, [animated, reducedMotion, target, value]);
+
+  const current = !animated || reducedMotion ? target : shown;
   const r = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * r;
-  const clamped = Math.max(0, Math.min(1, progress));
-  const glowColor = color ?? brandGradient[0];
 
   return (
     <View
       style={[
         { width: size, height: size, borderRadius: size / 2 },
-        glow && { shadowColor: glowColor, shadowOpacity: 0.55, shadowRadius: 24, shadowOffset: { width: 0, height: 0 } },
+        glow && {
+          shadowColor: color ?? brandGradient[0],
+          shadowOpacity: 0.28,
+          shadowRadius: 18,
+          shadowOffset: { width: 0, height: 0 },
+        },
       ]}
     >
       <Svg width={size} height={size}>
@@ -47,7 +76,7 @@ export function ProgressRing({
           </LinearGradient>
         </Defs>
         <Circle cx={size / 2} cy={size / 2} r={r} stroke={trackColor} strokeWidth={strokeWidth} fill="none" />
-        {clamped > 0 ? (
+        {current > 0.001 ? (
           <Circle
             cx={size / 2}
             cy={size / 2}
@@ -57,7 +86,7 @@ export function ProgressRing({
             strokeLinecap="round"
             fill="none"
             strokeDasharray={`${circumference} ${circumference}`}
-            strokeDashoffset={circumference * (1 - clamped)}
+            strokeDashoffset={circumference * (1 - current)}
             transform={`rotate(-90 ${size / 2} ${size / 2})`}
           />
         ) : null}
@@ -68,5 +97,5 @@ export function ProgressRing({
 }
 
 const styles = StyleSheet.create({
-  center: { alignItems: 'center', justifyContent: 'center' },
+  center: { alignItems: 'center', justifyContent: 'center', padding: 12 },
 });

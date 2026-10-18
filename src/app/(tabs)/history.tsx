@@ -1,132 +1,168 @@
 import { router } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import {
   AppText,
+  BarChart,
   Button,
   Card,
+  DemoBanner,
   EmptyState,
   Screen,
   ScreenHeader,
   SectionTitle,
+  Segmented,
   StatRow,
-  WeekChart,
-  type WeekChartPoint,
+  StatTile,
+  type BarPoint,
 } from '@/components';
-import { APPS } from '@/domain/apps';
-import { getChallenge } from '@/domain/challenges';
-import { fromDateKey, lastNDays } from '@/domain/date';
-import { currentPlan, PLANS } from '@/domain/plans';
-import { scoreTier } from '@/domain/score';
-import { bestAndWorst, dayMinutes, dayScore, sumUsage, type ScoredDay } from '@/domain/stats';
-import { useTodayKey } from '@/hooks/useToday';
-import { formatDuration, useStrings } from '@/i18n';
-import { useAppStore } from '@/store/useAppStore';
-import { colors, tierColor } from '@/theme';
+import { addDays, fromDateKey, lastNDays } from '@/domain/date';
+import { canUse, HISTORY_DAYS } from '@/domain/plans';
+import { buildSeries, compareAverages, MIN_DAYS_FOR_COMPARISON, summarize } from '@/domain/stats';
+import { usePlan } from '@/hooks/usePlan';
+import { useDataView, useTodayKey } from '@/hooks/useToday';
+import { format, formatDay, formatDuration, formatWeekday, useLanguage, useStrings } from '@/i18n';
+import { colors, spacing } from '@/theme';
 
-export default function HistoryScreen() {
+type Range = 7 | 30 | 90;
+
+export default function ProgressScreen() {
   const strings = useStrings();
-  const s = strings.history;
+  const language = useLanguage();
+  const s = strings.progress;
   const today = useTodayKey();
-  const days = useAppStore((state) => state.days);
-  const settings = useAppStore((state) => state.settings);
-  const plan = PLANS[currentPlan()];
+  const view = useDataView();
+  const plan = usePlan();
+  const [range, setRange] = useState<Range>(7);
+  const effectiveRange: Range = Math.min(range, HISTORY_DAYS[plan]) as Range;
 
   const data = useMemo(() => {
-    const keys = lastNDays(Math.min(7, plan.historyDays ?? 7), today);
-    const records = keys.map((key) => days[key]);
-    const points: WeekChartPoint[] = keys.map((key) => ({
-      key,
-      label: strings.weekdaysShort[fromDateKey(key).getDay()],
-      score: dayScore(days[key], settings)?.score ?? null,
-      highlight: key === today,
-    }));
-    const scored: ScoredDay[] = keys.flatMap((key) => {
-      const score = dayScore(days[key], settings);
-      return score ? [{ date: key, score: score.score, minutes: dayMinutes(days[key], settings.trackedApps) }] : [];
-    });
-    const totals = sumUsage(records, settings.trackedApps);
-    const perApp = settings.trackedApps
-      .map((id) => ({ id, minutes: totals[id] ?? 0 }))
-      .sort((a, b) => b.minutes - a.minutes);
-    const challenges = records.flatMap((day) => {
-      const challenge = day?.challengeCompleted ? getChallenge(day.challengeId) : undefined;
-      return day && challenge ? [{ date: day.date, challenge }] : [];
-    });
-    return { points, scored, perApp, challenges, ...bestAndWorst(scored) };
-  }, [days, settings, today, plan.historyDays, strings.weekdaysShort]);
+    const keys = lastNDays(effectiveRange, today);
+    const series = buildSeries(view.days, keys);
+    const summary = summarize(series);
+    const startMs = fromDateKey(keys[0]).getTime();
+    const pausesDone = view.pauses.filter((p) => p.completed && p.startedAt >= startMs).length;
+    const challengesDone = keys.filter((key) => view.days[key]?.challengeDone).length;
+    const last7 = summarize(buildSeries(view.days, lastNDays(7, today)));
+    const previous7 = summarize(buildSeries(view.days, lastNDays(7, addDays(today, -7))));
+    return {
+      series,
+      summary,
+      pausesDone,
+      challengesDone,
+      last7,
+      previous7,
+      weeklyDiff: compareAverages(last7, previous7),
+    };
+  }, [view, today, effectiveRange]);
 
-  const formatDay = (key: string) =>
-    fromDateKey(key).toLocaleDateString(settings.language, { weekday: 'long', day: 'numeric', month: 'short' });
+  const label = (date: string) => (effectiveRange === 7 ? formatWeekday(date, language) : date.slice(8));
+  const spoken = (date: string, value: string) => `${formatDay(date, strings, language, today)}: ${value}`;
 
-  const hasAnything = data.scored.length > 0 || data.challenges.length > 0;
+  const usagePoints: BarPoint[] = data.series.map((point) => ({
+    key: point.date,
+    label: label(point.date),
+    value: point.minutes,
+    reference: point.limitMin,
+    highlight: point.date === today,
+    accessibilityLabel: spoken(point.date, point.minutes === null ? strings.common.noData : formatDuration(point.minutes, strings)),
+  }));
+  const scorePoints: BarPoint[] = data.series.map((point) => ({
+    key: point.date,
+    label: label(point.date),
+    value: point.score,
+    highlight: point.date === today,
+    accessibilityLabel: spoken(point.date, point.score === null ? strings.common.noData : `${point.score}/100`),
+  }));
+
+  const hasAnything = data.summary.daysWithData > 0 || data.pausesDone > 0 || data.challengesDone > 0;
 
   return (
     <Screen edges={['top']}>
+      <DemoBanner />
       <ScreenHeader title={s.title} showBack={false} />
 
+      {plan === 'plus' ? (
+        <Segmented
+          value={range}
+          onChange={setRange}
+          options={([7, 30, 90] as Range[]).map((value) => ({ value, label: format(s.range, { n: value }) }))}
+        />
+      ) : (
+        <AppText variant="caption" color={colors.textMuted}>
+          {format(s.range, { n: HISTORY_DAYS.free })}
+        </AppText>
+      )}
+
       {!hasAnything ? (
-        <EmptyState emoji="📈" title={s.emptyTitle} body={s.emptyBody} />
+        <EmptyState title={s.emptyTitle} body={s.emptyBody} />
       ) : (
         <>
-          <SectionTitle>{s.last7}</SectionTitle>
+          <SectionTitle>{s.usageChart}</SectionTitle>
           <Card>
-            <WeekChart points={data.points} emptyLabel={s.noData} />
+            <BarChart
+              points={usagePoints}
+              color={colors.textMuted}
+              overColor={colors.warning}
+              formatValue={(value) => `${Math.round(value)}`}
+            />
+            <AppText variant="caption" color={colors.textFaint}>
+              {`${s.legendLimit} · ${s.legendNoData}`}
+            </AppText>
           </Card>
 
-          {data.best || data.worst ? (
-            <Card>
-              {data.best ? (
-                <StatRow
-                  label={`🏆 ${s.best} · ${formatDay(data.best.date)}`}
-                  value={String(data.best.score)}
-                  valueColor={tierColor(scoreTier(data.best.score))}
-                />
-              ) : null}
-              {data.worst ? (
-                <StatRow
-                  label={`🫠 ${s.worst} · ${formatDay(data.worst.date)}`}
-                  value={String(data.worst.score)}
-                  valueColor={tierColor(scoreTier(data.worst.score))}
-                />
-              ) : null}
-            </Card>
-          ) : null}
-
-          <SectionTitle>{s.perApp}</SectionTitle>
+          <SectionTitle>{s.scoreChart}</SectionTitle>
           <Card>
-            {data.perApp.map((entry) => (
-              <StatRow
-                key={entry.id}
-                label={APPS[entry.id].name}
-                value={formatDuration(entry.minutes, strings)}
-                dotColor={APPS[entry.id].color}
-              />
-            ))}
+            <BarChart points={scorePoints} color={colors.progress} max={100} formatValue={(value) => `${value}`} height={100} />
           </Card>
 
-          <SectionTitle>{s.challenges}</SectionTitle>
-          <Card>
-            {data.challenges.length === 0 ? (
-              <AppText variant="body" color={colors.textMuted}>
-                {strings.challenges.historyEmpty}
-              </AppText>
-            ) : (
-              data.challenges.map((entry) => (
-                <StatRow
-                  key={entry.date}
-                  label={`${entry.challenge.emoji} ${strings.challenges.items[entry.challenge.id].title}`}
-                  value={strings.weekdaysShort[fromDateKey(entry.date).getDay()]}
-                />
-              ))
-            )}
-          </Card>
+          <View style={styles.tiles}>
+            <StatTile
+              label={s.goalDays}
+              value={`${data.summary.daysMetGoal}`}
+              footnote={format(s.goalDaysValue, { met: data.summary.daysMetGoal, total: data.summary.daysWithData })}
+            />
+            <StatTile label={s.pausesDone} value={`${data.pausesDone}`} />
+            <StatTile label={s.challengesDone} value={`${data.challengesDone}`} footnote={strings.common.selfReported} />
+          </View>
         </>
       )}
 
-      {plan.historyDays !== null ? (
-        <Button variant="ghost" label={s.unlock} onPress={() => router.push('/paywall')} />
-      ) : null}
+      <SectionTitle>{s.weeklyTitle}</SectionTitle>
+      {canUse(plan, 'weeklyReport') ? (
+        <Card>
+          {data.weeklyDiff === null ? (
+            <AppText variant="body" color={colors.textMuted}>
+              {format(s.weeklyNotEnough, { n: MIN_DAYS_FOR_COMPARISON })}
+            </AppText>
+          ) : (
+            <>
+              <AppText variant="heading" color={data.weeklyDiff > 0 ? colors.progress : colors.text}>
+                {data.weeklyDiff > 0
+                  ? format(s.weeklyReduced, { n: data.weeklyDiff })
+                  : data.weeklyDiff < 0
+                    ? format(s.weeklyIncreased, { n: -data.weeklyDiff })
+                    : s.weeklySame}
+              </AppText>
+              <StatRow label={s.avgThis} value={formatDuration(data.last7.averageMinutes ?? 0, strings)} />
+              <StatRow label={s.avgPrev} value={formatDuration(data.previous7.averageMinutes ?? 0, strings)} />
+            </>
+          )}
+        </Card>
+      ) : (
+        <Card onPress={() => router.push('/paywall')} accessibilityHint={strings.settings.seeOffer}>
+          <AppText variant="body" color={colors.textMuted}>
+            {s.weeklyLocked}
+          </AppText>
+        </Card>
+      )}
+
+      {plan === 'free' ? <Button variant="ghost" label={s.unlock} onPress={() => router.push('/paywall')} /> : null}
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+});

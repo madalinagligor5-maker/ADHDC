@@ -1,18 +1,19 @@
-export const APP_IDS = ['tiktok', 'instagram', 'youtube', 'snapchat', 'facebook'] as const;
+export const APP_IDS = ['tiktok', 'instagram', 'youtube', 'facebook', 'other'] as const;
 
 export type AppId = (typeof APP_IDS)[number];
 
-/** Minutes spent per app on a given day. Missing keys mean 0. */
+/** Minutes per app for one day. A missing key means "no entry", 0 means "explicitly zero". */
 export type UsageMap = Partial<Record<AppId, number>>;
 
 export interface AppInfo {
   id: AppId;
-  /** Brand names are not translated. */
-  name: string;
-  /** Short-form feed this app is known for (shown under the name). */
-  feed: string;
+  /** Brand name; `null` for "other", whose label comes from translations. */
+  name: string | null;
   color: string;
-  /** Android package names, used by the automatic (UsageStats) provider. */
+  /**
+   * Android package names for the automatic provider. Android reports time per
+   * app, so Reels/Shorts cannot be separated from the rest of Instagram/YouTube.
+   */
   androidPackages: string[];
 }
 
@@ -20,56 +21,30 @@ export const APPS: Record<AppId, AppInfo> = {
   tiktok: {
     id: 'tiktok',
     name: 'TikTok',
-    feed: 'For You',
-    color: '#FF2D55',
+    color: '#F8FAFC',
     androidPackages: ['com.zhiliaoapp.musically', 'com.ss.android.ugc.trill'],
   },
-  instagram: {
-    id: 'instagram',
-    name: 'Instagram',
-    feed: 'Reels',
-    color: '#C13584',
-    androidPackages: ['com.instagram.android'],
-  },
-  youtube: {
-    id: 'youtube',
-    name: 'YouTube',
-    feed: 'Shorts',
-    color: '#FF4E45',
-    androidPackages: ['com.google.android.youtube'],
-  },
-  snapchat: {
-    id: 'snapchat',
-    name: 'Snapchat',
-    feed: 'Spotlight',
-    color: '#FFFC00',
-    androidPackages: ['com.snapchat.android'],
-  },
-  facebook: {
-    id: 'facebook',
-    name: 'Facebook',
-    feed: 'Reels',
-    color: '#1877F2',
-    androidPackages: ['com.facebook.katana'],
-  },
+  instagram: { id: 'instagram', name: 'Instagram', color: '#F472B6', androidPackages: ['com.instagram.android'] },
+  youtube: { id: 'youtube', name: 'YouTube', color: '#FB7185', androidPackages: ['com.google.android.youtube'] },
+  facebook: { id: 'facebook', name: 'Facebook', color: '#22D3EE', androidPackages: ['com.facebook.katana'] },
+  other: { id: 'other', name: null, color: '#94A3B8', androidPackages: [] },
 };
 
-/** Apps offered in onboarding; "all" selects every tracked app. */
-export const ONBOARDING_APPS: AppId[] = ['tiktok', 'instagram', 'youtube'];
+export const MAX_DAY_MINUTES = 24 * 60;
 
-export function totalMinutes(usage: UsageMap, apps: readonly AppId[]): number {
-  return apps.reduce((sum, id) => sum + (usage[id] ?? 0), 0);
+export function isAppId(value: unknown): value is AppId {
+  return typeof value === 'string' && (APP_IDS as readonly string[]).includes(value);
 }
 
-export function topApps(usage: UsageMap, apps: readonly AppId[], count = 3) {
-  return apps
-    .map((id) => ({ id, minutes: usage[id] ?? 0 }))
-    .filter((entry) => entry.minutes > 0)
+/** Total minutes for a day, or `null` when nothing was recorded. */
+export function totalMinutes(usage: UsageMap): number | null {
+  const values = APP_IDS.map((id) => usage[id]).filter((value): value is number => value !== undefined);
+  return values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0);
+}
+
+export function topApps(usage: UsageMap, count = 3) {
+  return APP_IDS.map((id) => ({ id, minutes: usage[id] }))
+    .filter((entry): entry is { id: AppId; minutes: number } => entry.minutes !== undefined && entry.minutes > 0)
     .sort((a, b) => b.minutes - a.minutes)
     .slice(0, count);
-}
-
-export function sanitizeMinutes(value: number): number {
-  if (!Number.isFinite(value) || value < 0) return 0;
-  return Math.min(Math.round(value), 24 * 60);
 }

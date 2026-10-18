@@ -1,39 +1,51 @@
 # ScrollFade
 
-> **Mai puțin scroll. Mai mult timp pentru tine.**
+> **Mai puțin scroll. Mai mult timp pentru tine.** · *Ieși din buclă.*
 
-ScrollFade este o aplicație mobilă (iOS + Android) care îți arată cât timp petreci în TikTok, Instagram Reels, YouTube Shorts și alte feed-uri short-form, îți dă un **Fade Score** zilnic (0–100) și te ajută să reduci scroll-ul cu provocări, streak-uri și un mod Focus.
+ScrollFade ajută utilizatorii să reducă scroll-ul automat prin obiective personale, pauze și progres vizibil. Aplicația este mobilă (iOS + Android), construită cu Expo, și are și o versiune web de prototip.
 
-Fără cont, fără server, fără reclame. **Datele rămân pe dispozitiv.**
+Fade Score arată progresul față de **obiectivul ales de utilizator**. Nu este o evaluare medicală. „Brainrot” apare doar ca expresie de marketing.
 
 ---
 
-## Brand
+## Stare: implementat / simulat / necesită integrare
 
-| Element | Valoare |
+### ✅ Implementat și funcțional
+
+| Zonă | Ce face |
 | --- | --- |
-| Logo | „S” cu gradient cyan → mint și trei linii roz de viteză (`src/components/LogoMark.tsx`, `assets/logo-mark.svg`) |
-| Fundal | Black `#000000`, Charcoal `#0B0B0F`, Surface `#14141B` |
-| Accente | Cyan `#22D3EE`, Mint `#34D399`, Pink `#F472B6` |
-| Brainrot ridicat | Coral `#FB7185` (doar pentru scoruri mici) |
-| Text | Off-white `#F8FAFC`, Muted gray `#94A3B8` |
-| Fonturi | **Outfit Bold** (titluri), **Inter** Regular / SemiBold (text) |
-| Taglines | „Mai puțin scroll. Mai mult timp pentru tine.” · „Less scroll. More you.” |
+| Onboarding | Welcome → obiectiv personal → aplicații → limită zilnică (30/60/90/120 sau valoare proprie) → sursa datelor. Totul se salvează local. |
+| Introducere manuală | Zi + aplicație + ore/minute. Reintroducerea aceleiași aplicații pentru aceeași zi **înlocuiește** valoarea. Editare, ștergere cu confirmare, max. 24 h/zi, fără valori negative, marcaj „auto-raportat”. |
+| Fade Score | `round(100 × min(1, limită / max(1, minute)))`. `null` fără date (diferit de 0 minute). Limita e salvată pe fiecare zi, deci schimbarea obiectivului nu rescrie istoricul. |
+| Dashboard | Scor, explicație la prima folosire, timp, obiectiv, zile consecutive, sursa datelor, provocarea zilei, „Începe pauza”. Fără date apare „Primul pas începe aici.”, nu un scor inventat. |
+| Streak | Doar zile **încheiate**, cu date și obiectiv respectat. Ziua curentă nu se numără. O zi fără date întrerupe seria. |
+| Pauze | 15/20/30/45/60 min, Pauză / Reia / Încheie. Timer pe timestamp-uri: rămâne corect după background sau redeschidere. Mesaj explicit că pauza **nu blochează** alte aplicații. |
+| Provocări | 4 provocări. „O pauză de 20 de minute” e **confirmată de timer**; celelalte sunt **auto-raportate**. Fără bonus la scor. |
+| Progres | Grafice pentru timp (cu linia obiectivului pe fiecare zi) și scor. „—” = fără date, separat de 0. Zile cu obiectiv respectat, pauze încheiate, provocări bifate. |
+| Free / Plus | Free: 7 zile de istoric. Plus: 30/90 de zile, raport săptămânal (compară doar când fiecare săptămână are ≥ 4 zile cu date), alegerea oricărei provocări. |
+| Mod demo | „Explorează un exemplu”: date fixe, etichetate permanent „Date demonstrative”. Nu se salvează și nu se amestecă cu datele reale. |
+| Setări | Limbă RO/EN, obiectiv, scop, aplicații, sursa datelor, reminder local, plan, export JSON, ștergere date cu confirmare, politică de confidențialitate și termeni (draft). |
+| Paywall | „Previzualizare ofertă” cu prețurile propuse, plan anual evidențiat, reînnoire și anulare explicate, butonul „Disponibil în curând” (dezactivat), „Restabilește achizițiile” cu răspuns onest. |
+| Localizare | Toate textele sunt în `src/i18n/ro.ts` și `en.ts`, cu aceeași structură (verificată de test). Plural românesc (1 zi / 5 zile / 20 de zile). Date și prețuri formatate după limbă. |
+| Accesibilitate | Ținte de atingere ≥ 44 px, roluri și etichete pentru cititorul de ecran, text scalabil, animația inelului dezactivată la „Reduce motion”. |
 
-Toate culorile și fonturile sunt definite în `src/theme/index.ts`. Iconițele din `assets/` sunt generate din `assets/logo-mark.svg`.
+### 🧪 Simulat pentru demonstrație
 
-## Tehnologie
+- **Modul demo**: 7 zile de date inventate (`src/domain/demo.ts`), etichetate peste tot.
+- **Plus în development**: un comutator în Setări → Dezvoltare, disponibil doar când `__DEV__` e true. Build-urile de producție îl ignoră (`currentPlanFrom`).
+- **Paywall**: prețurile vin din `PLANNED_PRICES`, nu dintr-un magazin. Nu se încasează nimic.
 
-| Zonă | Alegere |
-| --- | --- |
-| Framework | React Native + **Expo SDK 58**, TypeScript strict |
-| Navigare | **Expo Router** (rute în `src/app/`) |
-| Stare | **Zustand** + `persist` |
-| Stocare locală | **AsyncStorage** (offline, pe dispozitiv) |
-| Grafică | `react-native-svg` (inel de progres, grafic, creier) |
-| Screen time Android | Modul Expo local `modules/usage-stats` (Kotlin, `UsageStatsManager`) |
-| Notificări | `expo-notifications` (doar locale) |
-| Teste | Jest (`jest-expo`) pentru logica de scor, streak și provocări |
+### 🔌 Necesită integrare externă
+
+| Integrare | Stare | Ce trebuie |
+| --- | --- | --- |
+| Android – UsageStatsManager | **Cod scris, neverificat pe dispozitiv.** Modulul local `modules/usage-stats` (Kotlin) citește timpul din prim-plan per aplicație. | Development build (`npx expo run:android` sau EAS), test pe telefon real, declarația de permisiune în Google Play Console. |
+| iOS – Screen Time | **Neimplementat.** Providerul raportează „indisponibil” și aplicația rămâne pe modul manual. | Entitlement `com.apple.developer.family-controls` aprobat de Apple, extensii `DeviceActivityMonitor` / `DeviceActivityReport`. Apple nu expune minutele brute către JavaScript. |
+| Plăți (App Store / Google Play) | **Neimplementat.** Există interfața `SubscriptionService` și implementarea de previzualizare. | Produse `plus_monthly` / `plus_annual` în magazine, implementare a interfeței (direct sau printr-un serviciu dedicat), verificare a drepturilor. Accesul Plus nu trebuie să depindă de un flag local. |
+| Blocare aplicații / blocare programată | **Neimplementat.** Apare doar în lista „În pregătire” din paywall. | iOS: ManagedSettings (cu același entitlement). Android: soluție fără Accessibility Service ca scurtătură. |
+| Ofertă de lansare (59,99 lei primul an) | **Dezactivată** (`LAUNCH_OFFER.enabled = false`). | Configurată ca ofertă introductivă în magazine. Nu folosim „primii 100” sau countdown-uri. |
+
+---
 
 ## Rulare
 
@@ -41,7 +53,8 @@ Cerințe: Node 20+ și npm.
 
 ```bash
 npm install
-npm start            # pornește Metro; scanează QR-ul cu Expo Go
+npm start            # Metro; deschide în Expo Go (mod manual complet funcțional)
+npm run web          # prototip web în browser
 ```
 
 Verificări:
@@ -49,142 +62,89 @@ Verificări:
 ```bash
 npm run typecheck    # tsc --noEmit
 npm run lint         # expo lint
-npm test             # jest
+npm test             # jest (rulează în fusul orar Europe/Bucharest, cu DST)
+npm run build:web    # export static în dist/ (folosit de Vercel)
 ```
 
-### Versiune web (Vercel)
+### Development build (pentru modulul Android)
+
+Modulul nativ nu există în Expo Go. Pentru a testa datele automate pe Android:
 
 ```bash
-npm run web          # dev server în browser
-npm run build:web    # export static în dist/
+npm run android:dev                                   # npx expo run:android (Android SDK local)
+npx eas-cli@latest build --profile development -p android   # sau în cloud
 ```
 
-`vercel.json` configurează build-ul (`npm run build:web`, output `dist`, rewrite SPA către `index.html`). Pe web rulează modul manual; notificările și screen time-ul automat nu sunt disponibile.
+Folderele `android/` și `ios/` sunt generate și nu sunt versionate. Configurarea nativă se face din `app.json`. Permisiunea `PACKAGE_USAGE_STATS` este deja declarată acolo; utilizatorul o acordă din Setări → Acces la datele de utilizare.
 
-### Expo Go vs. development build
+### Versiunea web
 
-- **Expo Go** rulează tot MVP-ul în **modul manual** (introduci minutele). Modulul nativ de screen time nu există în Expo Go, așa că aplicația afișează automat fallback-ul.
-- Pentru **modul automat pe Android** ai nevoie de un development build, pentru că proiectul include cod nativ propriu:
+`vercel.json` construiește aplicația cu `expo export` și servește `dist/`. **Versiunea web nu poate monitoriza sau bloca alte aplicații.** Funcționează doar cu introducerea manuală, iar datele stau în stocarea browserului.
 
-```bash
-npm run android:dev                      # npx expo run:android (Android Studio + SDK local)
-# sau în cloud:
-npx eas-cli@latest build --profile development --platform android
-```
-
-Folderele `ios/` și `android/` sunt generate (Continuous Native Generation) și nu sunt versionate. Comportamentul nativ se configurează din `app.json`.
-
-## Configurare platforme
-
-### Android
-
-- `app.json` declară permisiunea `android.permission.PACKAGE_USAGE_STATS`.
-- Aceasta este o permisiune specială: utilizatorul o acordă din **Setări → Acces la utilizare**. Butonul „Permite accesul” deschide direct ecranul respectiv, iar aplicația re-verifică accesul când revii în ea.
-- Timpul se calculează din evenimentele `MOVE_TO_FOREGROUND` / `MOVE_TO_BACKGROUND` ale pachetelor urmărite (vezi `src/domain/apps.ts` pentru lista de pachete).
-- Pentru publicare în Google Play, permisiunea `PACKAGE_USAGE_STATS` trebuie justificată în Play Console (declarația de permisiuni sensibile).
-
-### iOS
-
-- `bundleIdentifier`: `app.scrollfade.mobile` (schimbă-l cu al tău).
-- În MVP, iOS rulează **doar în modul manual** (vezi limitările de mai jos). Arhitectura e pregătită: `src/services/screenTime/iosProvider.ts` implementează aceeași interfață ca providerul Android.
-
-## Limitări Screen Time API
-
-**iOS**
-
-1. Accesul la Screen Time se face prin framework-urile **FamilyControls**, **DeviceActivity** și **ManagedSettings**.
-2. Ai nevoie de entitlement-ul `com.apple.developer.family-controls`, pe care Apple îl aprobă manual (cerere separată pentru distribuție în App Store).
-3. Apple **nu oferă aplicației minutele brute**: datele se văd doar într-o extensie `DeviceActivityReport` (UI izolat), iar aplicația primește praguri/evenimente prin `DeviceActivityMonitor`. Pentru un Fade Score automat pe iOS, varianta realistă este:
-   - o extensie `DeviceActivityMonitor` cu praguri (ex. la 15/30/60 min) care scrie într-un App Group,
-   - aplicația citește din App Group pragurile atinse și estimează minutele.
-4. Integrarea cere target-uri native suplimentare (extensii) printr-un config plugin, de exemplu cu biblioteca `react-native-device-activity`. **Nu blochează MVP-ul**: providerul iOS returnează „indisponibil”, iar aplicația folosește modul manual.
-
-**Android**
-
-- Funcționează doar în development/production build (nu în Expo Go).
-- Timpul măsurat este timpul total în aplicație (de ex. tot Instagram, nu doar Reels). Android nu separă Reels/Shorts de restul aplicației.
-- Pe unele dispozitive (anumite skin-uri OEM) datele de utilizare pot fi întârziate sau incomplete.
+---
 
 ## Arhitectură
 
 ```
 src/
-  app/                    # Expo Router (fiecare fișier = ecran)
-    _layout.tsx           # Stack rădăcină, temă dark, ErrorBoundary, așteaptă datele locale
-    onboarding/           # 1. promisiunea · 2. alegerea aplicațiilor · 3. permisiune
-    (tabs)/               # Dashboard · Provocări · Istoric · Setări
-    score.tsx             # Detaliu scor zilnic
-    manual-entry.tsx      # Introducere manuală a timpului
-    focus.tsx             # Mod Focus (timer)
-    paywall.tsx           # ScrollFade Plus — „În curând”
-  components/             # Design system: Button, Card, ProgressRing, ScoreBadge, ChallengeCard, ...
-  domain/                 # Logică pură, fără React: scor, provocări, streak, planuri, date
-  hooks/                  # useToday, useScreenTimeSync
-  i18n/                   # ro.ts (implicit, sursa de adevăr), en.ts
+  app/                      # Expo Router: fiecare fișier este un ecran
+    onboarding/             # index (welcome) · goal · apps · limit · source
+    (tabs)/                 # index (Acasă) · history (Progres) · pause (Pauză) · settings
+    manual-entry.tsx        # introducere / editare / ștergere
+    score.tsx               # formula și exemple
+    challenges.tsx · paywall.tsx · privacy.tsx · terms.tsx
+  components/               # design system: Button, Card, Chip, ChoiceRow, ScoreRing, BarChart, ...
+  domain/                   # logică pură, testată: score, stats, usage, pause, plans, challenges, demo, date
+  hooks/                    # useToday / useDataView (real vs demo), usePlan, useScreenTimeSync, useReducedMotion
+  i18n/                     # ro.ts (implicit, sursa de adevăr) · en.ts
   services/
-    screenTime/           # Interfața comună + provider Android / iOS / manual
-    notifications.ts      # Reminder zilnic local
-  store/useAppStore.ts    # Zustand + AsyncStorage
-modules/usage-stats/      # Modul Expo local (Kotlin) pentru UsageStatsManager
+    screenTime/             # UsageProvider: manual · demo · android (nativ) · ios (indisponibil)
+    subscription/           # SubscriptionService + implementare de previzualizare + rezolvarea planului
+    exportData.ts · notifications.ts
+  store/useAppStore.ts      # Zustand + AsyncStorage, reguli de sursă și deduplicare
+  theme/index.ts            # design tokens
+modules/usage-stats/        # modul Expo local (Kotlin), doar Android
+assets/logo-mark.svg        # logo editabil (+ logo-mark-mono.svg)
 ```
 
-### O singură interfață de date
+### Reguli de date
 
-Modul manual și cel automat produc același tip: `UsageMap` (minute per aplicație pentru o zi), salvat prin `setUsage(date, usage, source)`. Scorul, streak-ul și istoricul nu știu de unde vin datele. Providerii implementează `ScreenTimeProvider` (`src/services/screenTime/types.ts`):
+- **O singură sursă pe zi.** Sincronizarea automată nu suprascrie niciodată o zi cu înregistrări manuale. Dacă editezi manual o zi automată, ziua devine manuală (utilizatorul este anunțat în formular).
+- **Fără date ≠ 0 minute.** O cheie lipsă înseamnă „nicio înregistrare”; `0` înseamnă „zero minute introduse explicit”.
+- **Limita per zi.** Fiecare zi păstrează limita valabilă atunci. Schimbarea obiectivului actualizează doar ziua de azi.
+- **Demo** este calculat în memorie și nu este persistat. Exportul conține doar datele reale.
 
-```ts
-interface ScreenTimeProvider {
-  getAvailability(): { available: true } | { available: false; reason: 'ios' | 'needs-native-build' | 'web' };
-  getPermission(): Promise<'granted' | 'denied' | 'unavailable'>;
-  requestPermission(): Promise<'granted' | 'denied' | 'unavailable'>;
-  getUsage(date: DateKey, apps: AppId[]): Promise<UsageMap>;
-}
-```
+## Design
 
-Datele introduse manual au prioritate: sincronizarea automată nu suprascrie o zi editată de utilizator.
+| Token | Valoare | Rol |
+| --- | --- | --- |
+| Background / Charcoal / Surface | `#000000` / `#0B0B0F` / `#14141B` | negrul domină |
+| Cyan | `#22D3EE` | acțiuni principale |
+| Mint | `#34D399` | progres |
+| Pink | `#F472B6` | identitate (logo, banner demo) |
+| Coral | `#FB7185` | avertizări discrete (peste obiectiv, erori) |
+| Text | `#F8FAFC` / `#94A3B8` | principal / secundar |
 
-## Fade Score
+Fonturi: **Outfit Bold** (titluri) și **Inter** (text), incluse local prin `@expo-google-fonts`. Spațiere pe grilă de 8. Glow doar pe inelul de scor.
 
-Definit în `src/domain/score.ts` (`SCORE_RULES`), ușor de ajustat:
+## Prețuri (propuse, neactive)
 
-| Regulă | Puncte |
-| --- | --- |
-| Start | 100 |
-| Minutele 0–30 | −0,5 / minut |
-| Minutele 31–60 | −1 / minut |
-| Peste 60 de minute | −1,5 / minut |
-| Provocarea zilei finalizată | +10 |
-| Limita zilnică respectată | +15 |
-| Sesiune Focus completă (15/30/45/60 min) | +3 / +5 / +8 / +10 (max. +20 pe zi) |
+| Regiune | Lunar | Anual |
+| --- | --- | --- |
+| România | 14,99 lei | 89,99 lei (≈ 7,50 lei/lună, ≈ 50% economie) |
+| Zona euro | 3,99 € | 19,99 € |
+| SUA | 3,99 USD | 19,99 USD |
 
-Scorul este rotunjit și limitat la intervalul 0–100.
-
-| Scor | Nivel |
-| --- | --- |
-| 90–100 | Creier curat |
-| 70–89 | Focus bun |
-| 40–69 | Scroll moderat |
-| 10–39 | Brainrot ridicat |
-| 0–9 | Mod NPC |
-
-**Streak:** o zi contează dacă limita a fost respectată **sau** provocarea a fost finalizată. Ziua curentă nu rupe streak-ul cât timp nu s-a terminat.
-
-## Localizare
-
-- Toate textele sunt în `src/i18n/ro.ts` (implicit). `en.ts` are exact aceeași structură, verificată de TypeScript.
-- Limba se schimbă din Setări. Pentru o limbă nouă: adaugi un fișier tipizat `Strings` și îl înregistrezi în `src/i18n/index.ts`.
-
-## Monetizare (pregătită, neactivă)
-
-`src/domain/plans.ts` definește planurile:
-
-- **Free:** scor zilnic, o provocare pe zi, istoric 7 zile.
-- **Plus:** istoric nelimitat, 3 provocări pe zi, Focus avansat, blocaje programate, statistici detaliate.
-
-`currentPlan()` întoarce mereu `'free'`. Ecranul Paywall afișează „În curând”; nu există plăți în MVP.
+Regiunea nu este dedusă din limba interfeței. În producție, prețul afișat trebuie să vină din magazin.
 
 ## Confidențialitate
 
-- Nu există backend, cont, analytics sau reclame.
-- Datele de utilizare se citesc doar după ecranul care explică scopul și doar cu acordul utilizatorului.
-- „Resetează datele” din Setări șterge tot de pe dispozitiv.
+Nu există cont, backend, analytics sau SDK-uri publicitare. Datele stau local (AsyncStorage; pe web, în stocarea browserului), fără criptare proprie. Politica de confidențialitate și termenii din aplicație sunt **drafturi**, nevalidate juridic, cu câmpuri de completat (operator, contact).
+
+## Ce NU este gata de publicare
+
+- Modulul Android nu a fost rulat pe un dispozitiv.
+- Nu există plăți și nici verificarea drepturilor Plus.
+- Textele juridice sunt draft.
+- Iconițele sunt provizorii, generate din SVG.
+- Nu s-au făcut teste de accesibilitate cu VoiceOver sau TalkBack pe dispozitive reale.

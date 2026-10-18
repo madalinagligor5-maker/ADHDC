@@ -8,14 +8,16 @@ interface CardProps {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
-export function Card({ children, onPress, style, accessibilityLabel }: CardProps) {
+export function Card({ children, onPress, style, accessibilityLabel, accessibilityHint }: CardProps) {
   if (onPress) {
     return (
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
+        accessibilityHint={accessibilityHint}
         onPress={onPress}
         style={({ pressed }) => [styles.card, style, pressed && styles.pressed]}
       >
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth * 2,
     borderColor: colors.border,
     padding: spacing.md,
     gap: spacing.sm,

@@ -1,77 +1,79 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { pickDailyChallenge, eligibleChallenges, extraChallenges } from '../challenges';
-import { addDays, lastNDays } from '../date';
-import { currentStreak, dayScore } from '../stats';
+import type { UsageMap } from '../apps';
+import { addDays } from '../date';
+import { buildSeries, compareAverages, currentStreak, dayMetGoal, dayScore, summarize } from '../stats';
 import { emptyDay, type DayRecord } from '../types';
 
-const settings = { dailyLimitMin: 60, trackedApps: ['tiktok', 'instagram'] as const };
-const tracked = [...settings.trackedApps];
+const TODAY = '2026-10-18';
 
-function day(date: string, minutes: number, challengeCompleted = false): DayRecord {
-  return { ...emptyDay(date), usage: { tiktok: minutes }, hasUsage: true, challengeCompleted };
+function day(date: string, usage: UsageMap, limitMin = 60): DayRecord {
+  return { ...emptyDay(date, limitMin), usage };
 }
 
-describe('dayScore', () => {
-  it('returns null when there is no usage yet', () => {
-    expect(dayScore(undefined, { ...settings, trackedApps: tracked })).toBeNull();
-    expect(dayScore(emptyDay('2026-01-01'), { ...settings, trackedApps: tracked })).toBeNull();
+describe('day helpers', () => {
+  it('scores with the limit stored on the day', () => {
+    expect(dayScore(day(TODAY, { tiktok: 120 }, 60))).toBe(50);
+    expect(dayScore(day(TODAY, { tiktok: 120 }, 120))).toBe(100);
   });
 
-  it('only counts tracked apps', () => {
-    const record = { ...emptyDay('2026-01-01'), usage: { tiktok: 30, youtube: 500 }, hasUsage: true };
-    expect(dayScore(record, { ...settings, trackedApps: tracked })?.score).toBe(100);
+  it('never treats a day without data as a success', () => {
+    expect(dayScore(emptyDay(TODAY, 60))).toBeNull();
+    expect(dayMetGoal(emptyDay(TODAY, 60))).toBe(false);
+    expect(dayMetGoal(day(TODAY, { tiktok: 0 }))).toBe(true);
   });
 });
 
 describe('currentStreak', () => {
-  const today = '2026-03-10';
-  const s = { ...settings, trackedApps: tracked };
-
-  it('counts consecutive days that respected the limit or completed the challenge', () => {
+  it('counts finished days with data and the goal met', () => {
     const days = {
-      [addDays(today, -3)]: day(addDays(today, -3), 200),
-      [addDays(today, -2)]: day(addDays(today, -2), 30),
-      [addDays(today, -1)]: day(addDays(today, -1), 120, true),
-      [today]: day(today, 10),
+      [addDays(TODAY, -3)]: day(addDays(TODAY, -3), { tiktok: 90 }),
+      [addDays(TODAY, -2)]: day(addDays(TODAY, -2), { tiktok: 30 }),
+      [addDays(TODAY, -1)]: day(addDays(TODAY, -1), { tiktok: 60 }),
     };
-    expect(currentStreak(days, today, s)).toBe(3);
+    expect(currentStreak(days, TODAY)).toBe(2);
   });
 
-  it('does not break the streak while today is still in progress', () => {
-    const days = {
-      [addDays(today, -1)]: day(addDays(today, -1), 30),
-      [today]: day(today, 90),
-    };
-    expect(currentStreak(days, today, s)).toBe(1);
+  it('does not count today before it ends', () => {
+    expect(currentStreak({ [TODAY]: day(TODAY, { tiktok: 5 }) }, TODAY)).toBe(0);
   });
 
-  it('is zero without data', () => {
-    expect(currentStreak({}, today, s)).toBe(0);
+  it('is broken by a day without data', () => {
+    const days = {
+      [addDays(TODAY, -3)]: day(addDays(TODAY, -3), { tiktok: 10 }),
+      [addDays(TODAY, -1)]: day(addDays(TODAY, -1), { tiktok: 10 }),
+    };
+    expect(currentStreak(days, TODAY)).toBe(1);
   });
 });
 
-describe('challenges', () => {
-  it('picks the same challenge for the same day', () => {
-    expect(pickDailyChallenge('2026-05-01', tracked).id).toBe(pickDailyChallenge('2026-05-01', tracked).id);
+describe('series and comparisons', () => {
+  it('keeps no-data days as null, not zero', () => {
+    const series = buildSeries({ [TODAY]: day(TODAY, { tiktok: 0 }) }, [addDays(TODAY, -1), TODAY]);
+    expect(series[0].minutes).toBeNull();
+    expect(series[0].score).toBeNull();
+    expect(series[1].minutes).toBe(0);
+    expect(series[1].score).toBe(100);
   });
 
-  it('never picks a challenge for an untracked app', () => {
-    for (const date of lastNDays(60, '2026-05-01')) {
-      expect(pickDailyChallenge(date, ['instagram']).requiresApp).not.toBe('tiktok');
-    }
-    expect(eligibleChallenges(['instagram']).some((c) => c.requiresApp === 'youtube')).toBe(false);
-  });
+  it('only compares periods with enough data', () => {
+    const makeWeek = (end: string, minutes: number, count: number) =>
+      Object.fromEntries(
+        Array.from({ length: count }, (_, i) => {
+          const date = addDays(end, -i);
+          return [date, day(date, { tiktok: minutes })];
+        }),
+      );
+    const keys = (end: string) => Array.from({ length: 7 }, (_, i) => addDays(end, -i));
+    const prevEnd = addDays(TODAY, -7);
 
-  it('extra challenges exclude the daily one', () => {
-    const daily = pickDailyChallenge('2026-05-01', tracked);
-    expect(extraChallenges('2026-05-01', tracked, 2).map((c) => c.id)).not.toContain(daily.id);
-  });
-});
+    const enough = { ...makeWeek(TODAY, 40, 5), ...makeWeek(prevEnd, 70, 5) };
+    const diff = compareAverages(summarize(buildSeries(enough, keys(TODAY))), summarize(buildSeries(enough, keys(prevEnd))));
+    expect(diff).toBe(30);
 
-describe('dates', () => {
-  it('handles month boundaries', () => {
-    expect(addDays('2026-03-01', -1)).toBe('2026-02-28');
-    expect(lastNDays(3, '2026-01-01')).toEqual(['2025-12-30', '2025-12-31', '2026-01-01']);
+    const sparse = { ...makeWeek(TODAY, 40, 5), ...makeWeek(prevEnd, 70, 2) };
+    expect(
+      compareAverages(summarize(buildSeries(sparse, keys(TODAY))), summarize(buildSeries(sparse, keys(prevEnd)))),
+    ).toBeNull();
   });
 });
