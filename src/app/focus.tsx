@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppText, Button, ProgressRing, Screen, ScreenHeader, Segmented } from '@/components';
 import { SCORE_RULES } from '@/domain/score';
@@ -9,6 +9,7 @@ import type { FocusDuration } from '@/domain/types';
 import { format, useStrings } from '@/i18n';
 import { useAppStore } from '@/store/useAppStore';
 import { colors, spacing } from '@/theme';
+import { confirm } from '@/utils/confirm';
 
 const DURATIONS: FocusDuration[] = [15, 30, 45, 60];
 
@@ -48,18 +49,17 @@ export default function FocusScreen() {
   const totalMs = active ? active.durationMin * 60_000 : 0;
   const remainingMs = active ? Math.min(totalMs, Math.max(0, active.startedAt + totalMs - now)) : 0;
 
-  const giveUp = () => {
-    Alert.alert(s.confirmStopTitle, s.confirmStopBody, [
-      { text: s.keepGoing, style: 'cancel' },
-      {
-        text: s.stop,
-        style: 'destructive',
-        onPress: () => {
-          finishFocus(false);
-          router.back();
-        },
-      },
-    ]);
+  const giveUp = async () => {
+    const stop = await confirm({
+      title: s.confirmStopTitle,
+      message: s.confirmStopBody,
+      confirmLabel: s.stop,
+      cancelLabel: s.keepGoing,
+      destructive: true,
+    });
+    if (!stop) return;
+    finishFocus(false);
+    router.back();
   };
 
   if (earned !== null) {

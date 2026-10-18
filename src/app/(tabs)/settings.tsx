@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, StyleSheet, Switch, View } from 'react-native';
+import { StyleSheet, Switch, View } from 'react-native';
 
 import {
   AppText,
@@ -18,10 +18,11 @@ import { APP_IDS, APPS, type AppId } from '@/domain/apps';
 import type { Language, ScreenTimeMode } from '@/domain/types';
 import { useScreenTimeSync } from '@/hooks/useScreenTimeSync';
 import { format, getStrings, useStrings } from '@/i18n';
-import { disableDailyReminder, enableDailyReminder } from '@/services/notifications';
+import { disableDailyReminder, enableDailyReminder, notificationsSupported } from '@/services/notifications';
 import { automaticProvider } from '@/services/screenTime';
 import { useAppStore } from '@/store/useAppStore';
 import { colors, spacing } from '@/theme';
+import { confirm } from '@/utils/confirm';
 
 export default function SettingsScreen() {
   const strings = useStrings();
@@ -75,19 +76,18 @@ export default function SettingsScreen() {
     }
   };
 
-  const confirmReset = () => {
-    Alert.alert(s.resetConfirmTitle, s.resetConfirmBody, [
-      { text: strings.common.cancel, style: 'cancel' },
-      {
-        text: s.resetConfirm,
-        style: 'destructive',
-        onPress: async () => {
-          await disableDailyReminder();
-          resetAll();
-          router.replace('/onboarding');
-        },
-      },
-    ]);
+  const confirmReset = async () => {
+    const ok = await confirm({
+      title: s.resetConfirmTitle,
+      message: s.resetConfirmBody,
+      confirmLabel: s.resetConfirm,
+      cancelLabel: strings.common.cancel,
+      destructive: true,
+    });
+    if (!ok) return;
+    await disableDailyReminder();
+    resetAll();
+    router.replace('/onboarding');
   };
 
   const permissionLabel = !availability.available
@@ -160,27 +160,31 @@ export default function SettingsScreen() {
         ) : null}
       </Card>
 
-      <SectionTitle>{s.notifications}</SectionTitle>
-      <Card>
-        <View style={styles.switchRow}>
-          <AppText variant="body" style={styles.flex}>
-            {s.notificationsHint}
-          </AppText>
-          <Switch
-            accessibilityLabel={s.notifications}
-            value={settings.notificationsEnabled}
-            disabled={savingNotifications}
-            onValueChange={toggleNotifications}
-            trackColor={{ true: colors.accent, false: colors.surfaceAlt }}
-            thumbColor={colors.text}
-          />
-        </View>
-        {notificationsDenied ? (
-          <AppText variant="caption" color={colors.coral}>
-            {s.notificationsDenied}
-          </AppText>
-        ) : null}
-      </Card>
+      {notificationsSupported ? (
+        <>
+          <SectionTitle>{s.notifications}</SectionTitle>
+          <Card>
+            <View style={styles.switchRow}>
+              <AppText variant="body" style={styles.flex}>
+                {s.notificationsHint}
+              </AppText>
+              <Switch
+                accessibilityLabel={s.notifications}
+                value={settings.notificationsEnabled}
+                disabled={savingNotifications}
+                onValueChange={toggleNotifications}
+                trackColor={{ true: colors.accent, false: colors.surfaceAlt }}
+                thumbColor={colors.text}
+              />
+            </View>
+            {notificationsDenied ? (
+              <AppText variant="caption" color={colors.coral}>
+                {s.notificationsDenied}
+              </AppText>
+            ) : null}
+          </Card>
+        </>
+      ) : null}
 
       <SectionTitle>{s.plus}</SectionTitle>
       <Card onPress={() => router.push('/paywall')}>

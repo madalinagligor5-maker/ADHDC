@@ -1,20 +1,27 @@
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
 import type { Strings } from '@/i18n';
 
 const REMINDER_ID = 'scrollfade-daily-reminder';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+/** Scheduled local notifications only exist on iOS and Android. */
+export const notificationsSupported = Platform.OS !== 'web';
+
+if (notificationsSupported) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+}
 
 /** Local-only daily reminder. Returns false if the user blocked notifications. */
 export async function enableDailyReminder(strings: Strings): Promise<boolean> {
+  if (!notificationsSupported) return false;
   const existing = await Notifications.getPermissionsAsync();
   const permission = existing.granted ? existing : await Notifications.requestPermissionsAsync();
   if (!permission.granted) return false;
@@ -36,5 +43,6 @@ export async function enableDailyReminder(strings: Strings): Promise<boolean> {
 }
 
 export async function disableDailyReminder(): Promise<void> {
+  if (!notificationsSupported) return;
   await Notifications.cancelScheduledNotificationAsync(REMINDER_ID).catch(() => undefined);
 }

@@ -23,7 +23,9 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "permissions": ["android.permission.PACKAGE_USAGE_STATS"],
+      "permissions": [
+        "android.permission.PACKAGE_USAGE_STATS"
+      ],
       "predictiveBackGestureEnabled": false
     },
     "plugins": [
@@ -38,6 +40,16 @@
     ],
     "experiments": {
       "typedRoutes": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png",
+      "backgroundColor": "#070B14",
+      "themeColor": "#070B14",
+      "name": "ScrollFade",
+      "shortName": "ScrollFade",
+      "lang": "ro"
     }
   }
 }

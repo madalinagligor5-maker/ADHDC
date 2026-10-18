@@ -38,6 +38,15 @@ npm run lint         # expo lint
 npm test             # jest
 ```
 
+### Versiune web (Vercel)
+
+```bash
+npm run web          # dev server în browser
+npm run build:web    # export static în dist/
+```
+
+`vercel.json` configurează build-ul (`npm run build:web`, output `dist`, rewrite SPA către `index.html`). Pe web rulează modul manual; notificările și screen time-ul automat nu sunt disponibile.
+
 ### Expo Go vs. development build
 
 - **Expo Go** rulează tot MVP-ul în **modul manual** (introduci minutele). Modulul nativ de screen time nu există în Expo Go, așa că aplicația afișează automat fallback-ul.
